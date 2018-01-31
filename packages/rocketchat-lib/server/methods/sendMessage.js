@@ -38,6 +38,8 @@ Meteor.methods({
 			}
 		});
 
+		message.ip = this.connection.clientAddress;
+
 		const room = Meteor.call('canAccessRoom', message.rid, user._id);
 		if (!room) {
 			return false;

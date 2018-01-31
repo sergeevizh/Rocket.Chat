@@ -24,7 +24,8 @@ RocketChat.loadMessageHistory = function loadMessageHistory({ userId, rid, end, 
 		sort: {
 			ts: -1
 		},
-		limit
+		limit,
+		fields: { ip: 0 }
 	};
 
 	if (!RocketChat.settings.get('Message_ShowEditedStatus')) {
