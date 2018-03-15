@@ -35,7 +35,8 @@ RocketChat.createRoom = function(type, name, owner, members, readOnly, extraData
 			u: {
 				_id: owner._id,
 				username: owner.username
-			}
+			},
+			queue: []
 		});
 	}
 

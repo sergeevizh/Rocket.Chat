@@ -30,6 +30,33 @@ Meteor.methods({
 			}
 		}
 
-		return RocketChat.addUserToRoom(rid, user);
+		// RocketChat.models.Rooms.removeUserFromQueue(rid, Meteor.userId());
+		// console.log('room', room);
+		// console.log('records', RocketChat.models.Subscriptions.findByRoomId(rid).fetch());
+		if (room.maxUserAmount) {
+			Meteor.call('getUserAmountOfRoom', rid, false, (err, amount) => {
+				// console.log('amount', amount);
+				if (room.maxUserAmount > amount && (!room.queue || room.queue.length === 0)) {
+					console.log('add user to room');
+					return RocketChat.addUserToRoom(rid, user);
+				} else {
+					console.log('room full or has a queue');
+					return RocketChat.models.Rooms.addUserToQueue(rid, Meteor.userId());
+					// return;
+				}
+				/* if (room.queue) {
+					RocketChat.models.Rooms.removeUserFromQueue(rid, Meteor.userId());
+					if (room.queue.includes(Meteor.userId())) {
+						console.log('user already in queue');
+						return;
+					} else {
+						console.log('add user to queue');
+						return RocketChat.models.Rooms.addUserToQueue(rid, Meteor.userId());
+					}
+				} */
+			});
+		} else {
+			return RocketChat.addUserToRoom(rid, user);
+		}
 	}
 });

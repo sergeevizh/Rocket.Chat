@@ -63,3 +63,15 @@ RocketChat.models.Rooms.setSystemMessagesById = function(_id, systemMessages) {
 	};
 	return this.update(query, update);
 };
+
+RocketChat.models.Rooms.setMaxUserAmountById = function(_id, maxUserAmount) {
+	const query = {
+		_id
+	};
+	const update = {
+		$set: {
+			maxUserAmount
+		}
+	};
+	return this.update(query, update);
+};

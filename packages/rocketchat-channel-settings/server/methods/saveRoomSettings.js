@@ -1,4 +1,4 @@
-const fields = ['roomName', 'roomTopic', 'roomAnnouncement', 'roomDescription', 'roomType', 'readOnly', 'reactWhenReadOnly', 'systemMessages', 'default', 'joinCode', 'tokenpass'];
+const fields = ['roomName', 'roomTopic', 'roomAnnouncement', 'roomDescription', 'roomType', 'readOnly', 'reactWhenReadOnly', 'systemMessages', 'default', 'joinCode', 'tokenpass', 'maxUserAmount'];
 Meteor.methods({
 	saveRoomSettings(rid, settings, value) {
 		if (!Meteor.userId()) {
@@ -116,6 +116,9 @@ Meteor.methods({
 					break;
 				case 'joinCode':
 					RocketChat.models.Rooms.setJoinCodeById(rid, String(value));
+					break;
+				case 'maxUserAmount':
+					RocketChat.saveRoomMaxUserAmount(rid, value);
 					break;
 				case 'default':
 					RocketChat.models.Rooms.saveDefaultById(rid, value);

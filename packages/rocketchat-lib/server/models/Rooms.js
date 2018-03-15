@@ -122,18 +122,22 @@ class ModelRooms extends RocketChat.models._Base {
 		let data;
 		if (this.useCache) {
 			data = RocketChat.models.Subscriptions.findByUserId(userId).fetch();
+			console.log('findBySubUserId11', data);
 			data = data.map(function(item) {
 				if (item._room) {
-					return item._room;
+					return { ...item._room, userRo: item.ro };
 				}
 				console.log('Empty Room for Subscription', item);
 				return {};
 			});
+			console.log('findBySubUserId22', data);
 			return this.arrayToCursor(this.processQueryOptionsOnResult(data, options));
 		}
 
-		data = RocketChat.models.Subscriptions.findByUserId(userId, {fields: {rid: 1}}).fetch();
+		data = RocketChat.models.Subscriptions.findByUserId(userId, {fields: {rid: 1, ro: 1}}).fetch();
+		console.log('findBySubUserId1', data);
 		data = data.map(item => item.rid);
+		console.log('findBySubUserId2', data);
 
 		const query = {
 			_id: {
@@ -753,6 +757,37 @@ class ModelRooms extends RocketChat.models._Base {
 		}
 
 		return this.update({ _id }, update);
+	}
+
+	addUserToQueue(_id, userId) {
+		const query = {
+			_id
+		};
+		const room = this.findOne(query);
+		const newQueue = room.queue ? [...room.queue, userId] : [userId];
+		const update = {
+			$set: {
+				queue: newQueue
+			}
+		};
+		return this.update(query, update);
+	}
+
+	removeUserFromQueue(_id, userId) {
+		const query = {
+			_id
+		};
+		const room = this.findOne(query);
+		if (!room.queue || room.queue === []) {
+			return;
+		}
+		const newQueue = _.without(room.queue, userId);
+		const update = {
+			$set: {
+				queue: newQueue
+			}
+		};
+		return this.update(query, update);
 	}
 
 	// INSERT
