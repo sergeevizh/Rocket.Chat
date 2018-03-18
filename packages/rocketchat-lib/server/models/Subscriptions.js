@@ -182,6 +182,31 @@ class ModelSubscriptions extends RocketChat.models._Base {
 		return this.find(query, { fields: { unread: 1 } });
 	}
 
+	findQueuedByUserId(userId) {
+		const query = {
+			'u._id': userId,
+			t: 'c',
+			ro: true
+		};
+
+		return this.find(query);
+	}
+
+	findNonQueuedByUserId(userId) {
+		const query = {
+			'u._id': userId,
+			t: 'c',
+			$or: [{
+				ro: { $exists: false }
+			},
+			{
+				ro: false
+			}]
+		};
+
+		return this.find(query);
+	}
+
 	// UPDATE
 	archiveByRoomId(roomId) {
 		const query =
