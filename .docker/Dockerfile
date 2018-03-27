@@ -4,6 +4,8 @@ ENV RC_VERSION 0.61.0
 
 MAINTAINER buildmaster@rocket.chat
 
+RUN apt-get update && apt-get install -y bsdtar && ln -sf $(which bsdtar) $(which tar)
+
 RUN set -x \
  && curl -SLf "https://releases.rocket.chat/${RC_VERSION}/download/" -o rocket.chat.tgz \
  && curl -SLf "https://releases.rocket.chat/${RC_VERSION}/asc" -o rocket.chat.tgz.asc \
