@@ -82,7 +82,10 @@ Meteor.startup(function() {
 		{ name: 'user',      scope: 'Users',         description: '' },
 		{ name: 'bot',       scope: 'Users',         description: '' },
 		{ name: 'guest',     scope: 'Users',         description: '' },
-		{ name: 'anonymous', scope: 'Users',         description: '' }
+		{ name: 'anonymous', scope: 'Users',         description: '' },
+		{ name: 'yellow-card', scope: 'Users',			 description: '' },
+		{ name: 'expert', 	 scope: 'Users', 				 description: '' },
+		{ name: 'moderator', scope: 'Users',			   description: '' }
 	];
 
 	for (const role of defaultRoles) {
