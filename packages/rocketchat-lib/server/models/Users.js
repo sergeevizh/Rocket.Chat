@@ -250,6 +250,17 @@ class ModelUsers extends RocketChat.models._Base {
 		return this.find(query, options);
 	}
 
+	findAnonymousUsersCreatedOverADayAgo(options) {
+		const oneDayAgo = new Date();
+		oneDayAgo.setDate(oneDayAgo.getDate() - 1);
+		const query = {
+			roles: 'anonymous',
+			createdAt: { $lte: oneDayAgo }
+		};
+
+		return this.find(query, options);
+	}
+
 	// UPDATE
 	addImportIds(_id, importIds) {
 		importIds = [].concat(importIds);
