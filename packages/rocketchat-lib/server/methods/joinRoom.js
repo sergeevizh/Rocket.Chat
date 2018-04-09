@@ -30,31 +30,50 @@ Meteor.methods({
 			}
 		}
 
-		// RocketChat.models.Rooms.removeUserFromQueue(rid, Meteor.userId());
-		// console.log('room', room);
-		// console.log('records', RocketChat.models.Subscriptions.findByRoomId(rid).fetch());
+		// Check if chat room has room for the user
 		if (room.maxUserAmount) {
-			Meteor.call('getUserAmountOfRoom', rid, false, (err, amount) => {
-				// console.log('amount', amount);
-				if (room.maxUserAmount > amount && (!room.queue || room.queue.length === 0)) {
-					console.log('add user to room');
-					return RocketChat.addUserToRoom(rid, user);
-				} else {
-					console.log('room full or has a queue');
-					return RocketChat.models.Rooms.addUserToQueue(rid, Meteor.userId());
-					// return;
+			RocketChat.models.Rooms.removeUserFromQueue(rid, Meteor.userId());
+
+			const filter = (record) => {
+				if (!record._user) {
+					console.log('Subscription without user', record._id);
+					return false;
 				}
-				/* if (room.queue) {
-					RocketChat.models.Rooms.removeUserFromQueue(rid, Meteor.userId());
-					if (room.queue.includes(Meteor.userId())) {
-						console.log('user already in queue');
-						return;
-					} else {
-						console.log('add user to queue');
-						return RocketChat.models.Rooms.addUserToQueue(rid, Meteor.userId());
-					}
-				} */
-			});
+				if (!room.usernames.includes(record._user.username)) {
+					return false;
+				}
+				if (record.ro === true) { // User is queuing
+					return false;
+				}
+				if (record._user.roles) { // Skip admins and mods
+					return (!record._user.roles.includes('admin') &&
+						!record._user.roles.includes('expert') &&
+						!record._user.roles.includes('moderator'));
+				}
+				return true;
+			};
+
+			const records = RocketChat.models.Subscriptions.findByRoomId(rid).fetch();
+			const filtered = records.filter(filter);
+			const amount = filtered.length;
+			console.log('amount', amount);
+
+			if (room.maxUserAmount > amount && (!room.queue || room.queue.length === 0)) {
+				console.log('add user to room');
+				return RocketChat.addUserToRoom(rid, user);
+			} else {
+				console.log('room full or has a queue');
+				// return RocketChat.models.Rooms.addUserToQueue(rid, Meteor.userId());
+				// return RocketChat.addUserToQueue(rid);
+				if (room.queue.includes(Meteor.userId())) {
+					console.log('user already in queue');
+					return;
+				} else {
+					console.log('add user to queue');
+					RocketChat.models.Subscriptions.createWithRoomAndUser(room, user, { open: true, ro: true });
+					return RocketChat.models.Rooms.addUserToQueue(rid, Meteor.userId());
+				}
+			}
 		} else {
 			return RocketChat.addUserToRoom(rid, user);
 		}
