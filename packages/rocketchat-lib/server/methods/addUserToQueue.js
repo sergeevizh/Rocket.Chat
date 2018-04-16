@@ -29,13 +29,11 @@ Meteor.methods({
 			}
 		}
 
-		RocketChat.models.Rooms.removeUserFromQueue(rid, Meteor.userId());
-		if (room.queue.includes(Meteor.userId())) {
-			console.log('user already in queue');
+		if (room.queue && room.queue.includes(Meteor.userId())) {
+			// User already in queue
 			return;
 		} else {
-			console.log('add user to queue');
-			RocketChat.models.Subscriptions.createWithRoomAndUser(room, user, { open: true, ro: true });
+			RocketChat.models.Subscriptions.createWithRoomAndUser(room, user, { open: true, ro: true, queuing: true });
 			return RocketChat.models.Rooms.addUserToQueue(rid, Meteor.userId());
 		}
 	}

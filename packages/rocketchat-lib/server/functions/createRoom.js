@@ -2,7 +2,7 @@
 import _ from 'underscore';
 import s from 'underscore.string';
 
-RocketChat.createRoom = function(type, name, owner, members, readOnly, extraData={}) {
+RocketChat.createRoom = function(type, name, owner, members, readOnly, extraData={}, maxUserAmount=null) {
 	name = s.trim(name);
 	owner = s.trim(owner);
 	members = [].concat(members);
@@ -36,7 +36,8 @@ RocketChat.createRoom = function(type, name, owner, members, readOnly, extraData
 				_id: owner._id,
 				username: owner.username
 			},
-			queue: []
+			queue: [],
+			maxUserAmount
 		});
 	}
 
@@ -46,7 +47,7 @@ RocketChat.createRoom = function(type, name, owner, members, readOnly, extraData
 		sysMes: readOnly !== true
 	});
 
-	const room = RocketChat.models.Rooms.createWithTypeNameUserAndUsernames(type, slugifiedRoomName, name, owner, members, extraData);
+	const room = RocketChat.models.Rooms.createWithTypeNameUserAndUsernames(type, slugifiedRoomName, name, owner, members, extraData, maxUserAmount);
 
 	for (const username of members) {
 		const member = RocketChat.models.Users.findOneByUsername(username, { fields: { username: 1 }});

@@ -151,6 +151,10 @@ RocketChat.API.v1.addRoute('channels.create', { authRequired: true }, {
 			return RocketChat.API.v1.failure('Body param "customFields" must be an object if provided');
 		}
 
+		if (this.bodyParams.maxUserAmount && !(typeof this.bodyParams.maxUserAmount === 'number')) {
+			return RocketChat.API.v1.failure('Body param "maxUserAmount" must be a number if provided');
+		}
+
 		let readOnly = false;
 		if (typeof this.bodyParams.readOnly !== 'undefined') {
 			readOnly = this.bodyParams.readOnly;
@@ -158,7 +162,7 @@ RocketChat.API.v1.addRoute('channels.create', { authRequired: true }, {
 
 		let id;
 		Meteor.runAsUser(this.userId, () => {
-			id = Meteor.call('createChannel', this.bodyParams.name, this.bodyParams.members ? this.bodyParams.members : [], readOnly, this.bodyParams.customFields);
+			id = Meteor.call('createChannel', this.bodyParams.name, this.bodyParams.members ? this.bodyParams.members : [], readOnly, this.bodyParams.customFields, this.bodyParams.maxUserAmount);
 		});
 
 		return RocketChat.API.v1.success({

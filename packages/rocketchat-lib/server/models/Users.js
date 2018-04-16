@@ -585,41 +585,44 @@ RocketChat.models.Users = new ModelUsers(Meteor.users, true);
 RocketChat.models.Users.on('changed', function(type, user) {
 	if (!RocketChat.offlineTimeouts) {
 		RocketChat.offlineTimeouts = {};
-		// RocketChat.models.Rooms.setMaxUserAmountById('S3zWDh2oFmhizxDqz', 1);
 	}
-	if (user.status !== user.statusDefault) {
-		console.log('*** ', user.status, '!==', user.statusDefault);
-	} else if (type === 'updated' && user.status !== 'offline') {
-		console.log('*** ', type, ' === updated &&', user.status, '!== offline');
-		console.log('*** ', user.name, 'CAME ONLINE');
-	} else if (type === 'updated' && user.status === 'offline') {
-		console.log('*** ', type, ' === updated &&', user.status, '=== offline');
-		console.log('*** ', user.name, 'WENT OFFLINE');
 
-		// TODO: Check if user is an admin/mod
+	if (user.status === user.statusDefault &&
+		type === 'updated' && user.status !== 'offline') {
+		// User came online - clear timeout
+		if (RocketChat.offlineTimeouts && RocketChat.offlineTimeouts[user._id]) {
+			Meteor.clearTimeout(RocketChat.offlineTimeouts[user._id]);
+			delete RocketChat.offlineTimeouts[user._id];
+		}
+	} else if (user.status === user.statusDefault &&
+		type === 'updated' && user.status === 'offline') {
+
+		// Skip admins and moderators
+		if (user.roles.includes('admin') || user.roles.includes('moderator')) {
+			return;
+		}
+
+		// Skip if user already has a timeout
 		if (RocketChat.offlineTimeouts[user._id]) {
 			return;
 		}
-		console.log('*** SET TIMEOUT FOR ', user.name);
+
+		// Kick offline user from channels and queues after 10 min
 		RocketChat.offlineTimeouts[user._id] = Meteor.setTimeout(function() {
 			delete RocketChat.offlineTimeouts[user._id];
-			console.log('*** TIMEOUT EXPIRED: ', user.name);
 
 			// Remove from chat rooms
 			const nonQueued = RocketChat.models.Subscriptions.findNonQueuedByUserId(user._id).fetch();
 			nonQueued.forEach((sub) => {
-				console.log('*** REMOVE FROM ROOM:', sub.rid);
 				RocketChat.removeUserFromRoom(sub.rid, user);
 			});
 
 			// Remove from queues
 			const queued = RocketChat.models.Subscriptions.findQueuedByUserId(user._id).fetch();
 			queued.forEach((sub) => {
-				console.log('*** REMOVE FROM QUEUE:', sub.rid);
-				// RocketChat.removeUserFromQueue(sub.rid);
 				RocketChat.models.Subscriptions.removeByRoomIdAndUserId(sub.rid, user._id);
 				RocketChat.models.Rooms.removeUserFromQueue(sub.rid, user._id);
 			});
-		}, 1000);
+		}, 600000);
 	}
 });

@@ -122,7 +122,6 @@ class ModelRooms extends RocketChat.models._Base {
 		let data;
 		if (this.useCache) {
 			data = RocketChat.models.Subscriptions.findByUserId(userId).fetch();
-			console.log('findBySubUserId11', data);
 			data = data.map(function(item) {
 				if (item._room) {
 					return { ...item._room, userRo: item.ro };
@@ -130,14 +129,11 @@ class ModelRooms extends RocketChat.models._Base {
 				console.log('Empty Room for Subscription', item);
 				return {};
 			});
-			console.log('findBySubUserId22', data);
 			return this.arrayToCursor(this.processQueryOptionsOnResult(data, options));
 		}
 
 		data = RocketChat.models.Subscriptions.findByUserId(userId, {fields: {rid: 1, ro: 1}}).fetch();
-		console.log('findBySubUserId1', data);
 		data = data.map(item => item.rid);
-		console.log('findBySubUserId2', data);
 
 		const query = {
 			_id: {
@@ -765,16 +761,9 @@ class ModelRooms extends RocketChat.models._Base {
 		};
 		const room = this.findOne(query);
 		if (room.queue && room.queue.includes(userId)) {
-			console.log('user already in queue');
+			// User already in queue
 			return;
 		}
-		/*const newQueue = room.queue ? [...room.queue, userId] : [userId];
-		const update = {
-			$set: {
-				queue: newQueue
-			}
-		};*/
-		console.log('addUserToQueue', _id, userId);
 		const update = {
 			$push: {
 				queue: userId
@@ -792,15 +781,21 @@ class ModelRooms extends RocketChat.models._Base {
 		if (!room.queue || room.queue === []) {
 			return;
 		}
-		/*const newQueue = _.without(room.queue, userId);
-		const update = {
-			$set: {
-				queue: newQueue
-			}
-		};*/
 		const update = {
 			$pull: {
 				queue: userId
+			}
+		};
+		return this.update(query, update);
+	}
+
+	clearQueuesOfActiveRooms() {
+		const query = {
+			archived: false
+		};
+		const update = {
+			$set: {
+				queue: []
 			}
 		};
 		return this.update(query, update);
@@ -821,7 +816,7 @@ class ModelRooms extends RocketChat.models._Base {
 	}
 
 	// INSERT
-	createWithTypeNameUserAndUsernames(type, name, fname, user, usernames, extraData) {
+	createWithTypeNameUserAndUsernames(type, name, fname, user, usernames, extraData, maxUserAmount) {
 		const room = {
 			name,
 			fname,
@@ -833,6 +828,10 @@ class ModelRooms extends RocketChat.models._Base {
 				username: user.username
 			}
 		};
+
+		if (maxUserAmount) {
+			room.maxUserAmount = maxUserAmount;
+		}
 
 		_.extend(room, extraData);
 

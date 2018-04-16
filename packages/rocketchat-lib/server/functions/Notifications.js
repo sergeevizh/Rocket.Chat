@@ -43,7 +43,7 @@ RocketChat.Notifications = new class {
 			if (this.userId == null) {
 				return false;
 			}
-			return room.usernames.indexOf(user.username) > -1;
+			return !!room.usernames && room.usernames.indexOf(user.username) > -1;
 		});
 		this.streamRoomUsers.allowRead('none');
 		this.streamUser.allowRead(function(eventName) {

@@ -30,16 +30,19 @@ Meteor.methods({
 			}
 		}
 
+		// Check if user already in room
+		if (room.usernames && room.usernames.includes(user.username)) {
+			return;
+		}
+
 		// Check if chat room has room for the user
 		if (room.maxUserAmount) {
-			RocketChat.models.Rooms.removeUserFromQueue(rid, Meteor.userId());
-
 			const filter = (record) => {
 				if (!record._user) {
 					console.log('Subscription without user', record._id);
 					return false;
 				}
-				if (!room.usernames.includes(record._user.username)) {
+				if (!room.usernames || !room.usernames.includes(record._user.username)) {
 					return false;
 				}
 				if (record.ro === true) { // User is queuing
@@ -56,23 +59,15 @@ Meteor.methods({
 			const records = RocketChat.models.Subscriptions.findByRoomId(rid).fetch();
 			const filtered = records.filter(filter);
 			const amount = filtered.length;
-			console.log('amount', amount);
 
 			if (room.maxUserAmount > amount && (!room.queue || room.queue.length === 0)) {
-				console.log('add user to room');
 				return RocketChat.addUserToRoom(rid, user);
+			} else if (room.queue && room.queue.includes(Meteor.userId())) {
+				// User already in queue
+				return;
 			} else {
-				console.log('room full or has a queue');
-				// return RocketChat.models.Rooms.addUserToQueue(rid, Meteor.userId());
-				// return RocketChat.addUserToQueue(rid);
-				if (room.queue.includes(Meteor.userId())) {
-					console.log('user already in queue');
-					return;
-				} else {
-					console.log('add user to queue');
-					RocketChat.models.Subscriptions.createWithRoomAndUser(room, user, { open: true, ro: true });
-					return RocketChat.models.Rooms.addUserToQueue(rid, Meteor.userId());
-				}
+				RocketChat.models.Subscriptions.createWithRoomAndUser(room, user, { open: true, ro: true, queuing: true });
+				return RocketChat.models.Rooms.addUserToQueue(rid, Meteor.userId());
 			}
 		} else {
 			return RocketChat.addUserToRoom(rid, user);

@@ -577,7 +577,8 @@ class ModelSubscriptions extends RocketChat.models._Base {
 
 		const update = {
 			$set: {
-				ro: false
+				ro: false,
+				queuing: false
 			}
 		};
 
@@ -646,11 +647,13 @@ class ModelSubscriptions extends RocketChat.models._Base {
 RocketChat.models.Subscriptions = new ModelSubscriptions('subscription', true);
 
 RocketChat.models.Subscriptions.on('changed', function(type, sub) {
-	console.log('*** SUBS CHANGED:');
-	console.log('type', type);
-	console.log('sub', sub);
-
-	if (type === 'removed' && !sub.ro) {
+	if (type === 'removed' && sub.queuing) {
+		// User left queue - remove from room data
+		if (sub._room.queue && sub._room.queue.includes(sub._user._id)) {
+			RocketChat.models.Rooms.removeUserFromQueue(sub.rid, sub.u._id);
+		}
+	}
+	if (type === 'removed' && !sub.queuing) {
 		// User left room - check if there is a queue
 		const room = sub._room;
 		if (room.maxUserAmount && room.queue && room.queue.length > 0) {
@@ -678,10 +681,14 @@ RocketChat.models.Subscriptions.on('changed', function(type, sub) {
 			if (nonAdminUsers.length < room.maxUserAmount) {
 				const sub = RocketChat.models.Subscriptions.findOneByRoomIdAndUserId(room._id, room.queue[0]);
 				if (sub) {
-					console.log('Move user from queue to room');
+					// Move user from queue to room
+					RocketChat.models.Rooms.removeUserFromQueue(room._id, sub.u._id);
 					RocketChat.models.Subscriptions.moveUserFromQueueToRoom(sub._id);
+					RocketChat.models.Messages.createUserJoinWithRoomIdAndUser(room._id, sub.u, {
+						ts: new Date()
+					});
 				} else {
-					console.log('Subscription not found - remove from queue');
+					// Subscription not found - remove from queue
 					RocketChat.models.Rooms.removeUserFromQueue(room._id, room.queue[0]);
 				}
 			}
