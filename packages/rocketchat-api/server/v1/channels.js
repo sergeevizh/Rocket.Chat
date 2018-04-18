@@ -799,6 +799,28 @@ RocketChat.API.v1.addRoute('channels.setType', { authRequired: true }, {
 	}
 });
 
+RocketChat.API.v1.addRoute('channels.setMaxUserAmount', { authRequired: true }, {
+	post() {
+		if (this.bodyParams.maxUserAmount && typeof this.bodyParams.maxUserAmount !== 'number') {
+			return RocketChat.API.v1.failure('The bodyParam "maxUserAmount" should be a number');
+		}
+
+		const findResult = findChannelByIdOrName({ params: this.requestParams() });
+
+		if (findResult.maxUserAmount === this.bodyParams.maxUserAmount) {
+			return RocketChat.API.v1.failure('The maximum user amount is the same as what it would be changed to.');
+		}
+
+		Meteor.runAsUser(this.userId, () => {
+			Meteor.call('saveRoomSettings', findResult._id, 'maxUserAmount', this.bodyParams.maxUserAmount);
+		});
+
+		return RocketChat.API.v1.success({
+			channel: RocketChat.models.Rooms.findOneById(findResult._id, { fields: RocketChat.API.v1.defaultFieldsToExclude })
+		});
+	}
+});
+
 RocketChat.API.v1.addRoute('channels.unarchive', { authRequired: true }, {
 	post() {
 		const findResult = findChannelByIdOrName({ params: this.requestParams(), checkedArchived: false });

@@ -834,12 +834,12 @@ class ModelRooms extends RocketChat.models._Base {
 			u: {
 				_id: user._id,
 				username: user.username
-			}
+			},
+			queue: []
 		};
 
 		if (maxUserAmount) {
 			room.maxUserAmount = maxUserAmount;
-			room.queue = [];
 		}
 
 		_.extend(room, extraData);
