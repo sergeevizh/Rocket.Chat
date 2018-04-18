@@ -161,7 +161,7 @@ function createChannel(userId, params) {
 
 	let id;
 	Meteor.runAsUser(userId, () => {
-		id = Meteor.call('createChannel', params.name, params.members ? params.members : [], readOnly, params.customFields);
+		id = Meteor.call('createChannel', params.name, params.members ? params.members : [], readOnly, params.customFields, params.maxUserAmount);
 	});
 
 	return {

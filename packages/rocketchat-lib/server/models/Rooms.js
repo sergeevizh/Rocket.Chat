@@ -786,7 +786,6 @@ class ModelRooms extends RocketChat.models._Base {
 			_id
 		};
 		const room = this.findOne(query);
-		console.log('removeUserFromQueue', room.queue, userId);
 		if (!room.queue || room.queue === []) {
 			return;
 		}
@@ -840,6 +839,7 @@ class ModelRooms extends RocketChat.models._Base {
 
 		if (maxUserAmount) {
 			room.maxUserAmount = maxUserAmount;
+			room.queue = [];
 		}
 
 		_.extend(room, extraData);
