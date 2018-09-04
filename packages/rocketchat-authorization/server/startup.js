@@ -55,7 +55,7 @@ Meteor.startup(function() {
 		{ _id: 'view-c-room',                   roles : ['admin', 'user', 'bot', 'anonymous'] },
 		{ _id: 'user-generate-access-token',    roles : ['admin'] },
 		{ _id: 'view-d-room',                   roles : ['admin', 'user', 'bot'] },
-		{ _id: 'view-full-other-user-info',     roles : ['admin'] },
+		{ _id: 'view-full-other-user-info',     roles : ['admin', 'user'] },
 		{ _id: 'view-history',                  roles : ['admin', 'user', 'anonymous'] },
 		{ _id: 'view-joined-room',              roles : ['guest', 'bot', 'anonymous'] },
 		{ _id: 'view-join-code',                roles : ['admin'] },
@@ -87,7 +87,9 @@ Meteor.startup(function() {
 		{ name: 'anonymous', scope: 'Users',         description: '' },
 		{ name: 'yellow-card', scope: 'Users',			 description: '' },
 		{ name: 'expert', 	 scope: 'Users', 				 description: '' },
-		{ name: 'moderator', scope: 'Users',			   description: '' }
+    { name: 'moderator', scope: 'Users',			   description: '' },
+    { name: 'ngo-expert', 	 scope: 'Users',		 description: '' },
+		{ name: 'ngo-moderator', scope: 'Users',	   description: '' }
 	];
 
 	for (const role of defaultRoles) {
