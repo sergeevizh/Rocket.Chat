@@ -1,11 +1,25 @@
 FROM rocketchat/base:8
 
 ENV RC_VERSION 0.64.0-develop
+ENV METEOR_ALLOW_SUPERUSER true
 
-RUN apt-get update && apt-get install -y bsdtar && ln -sf $(which bsdtar) $(which tar)
+RUN apt-get update && apt-get install -y bsdtar curl g++ bzip2 python build-essential && ln -sf $(which bsdtar) $(which tar)
+
+RUN curl https://install.meteor.com | sed s/--progress-bar/-sL/g | /bin/sh; fi
 
 RUN mkdir -p /app
-ADD build.tar.gz /app
+
+RUN mkdir src
+COPY . /src
+WORKDIR /src
+
+RUN meteor npm install \
+  && set +e \
+  && meteor add rocketchat:lib \
+  && set -e \
+  && meteor build --allow-superuser --server-only  /app
+
+# ADD build.tar.gz /app
 RUN cd /app/bundle/programs/server \
   && npm install \
   && npm cache clear --force \
