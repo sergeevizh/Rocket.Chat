@@ -51,9 +51,6 @@ before_script:
 - travis_retry meteor npm install
 - |-
   mongo --eval 'rs.initiate({_id:"rs0", members: [{"_id":1, "host":"localhost:27017"}]})'
-- meteor npm run lint
-- meteor npm run testunit
-- meteor npm run stylelint
 - travis_retry meteor build --headless /tmp/build
 - mkdir /tmp/build-test
 - tar -xf /tmp/build/Rocket.Chat.tar.gz -C /tmp/build-test/
@@ -66,7 +63,6 @@ script:
 - travis_retry npm test
 - mongo meteor --eval 'db.dropDatabase()'
 - unset MONGO_OPLOG_URL
-- travis_retry npm test
 before_deploy:
 - source ".travis/setartname.sh"
 - source ".travis/setdeploydir.sh"
