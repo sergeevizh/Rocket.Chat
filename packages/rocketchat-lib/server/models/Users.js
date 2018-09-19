@@ -250,14 +250,14 @@ class ModelUsers extends RocketChat.models._Base {
 		return this.find(query, options);
 	}
 
-	findAnonymousUsersCreatedOverADayAgo(options) {
-		const oneDayAgo = new Date();
-		oneDayAgo.setDate(oneDayAgo.getDate() - 1);
+	findExpiredAnonymousUsers(options) {
+		const queryDate = new Date();
+		queryDate.setMinutes(queryDate.getMinutes() - 15);
 		const query = {
 			roles: 'anonymous',
-			createdAt: { $lte: oneDayAgo }
+			status: 'offline',
+			createdAt: { $lte: queryDate }
 		};
-
 		return this.find(query, options);
 	}
 
