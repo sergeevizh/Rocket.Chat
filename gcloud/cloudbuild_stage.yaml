@@ -32,13 +32,13 @@ steps:
 
 - name: 'ubuntu:16.04'
   entrypoint: 'bash'
-  env: ["HOME=/workspace/meteor"]
   args:
   - '-c'
   - |
     apt -qq update && apt -qq install curl git python g++ build-essential bzip2 -y
     export HOME=/meteor
     mkdir $HOME
+    echo $HOME
     export PATH="$HOME/.meteor:$PATH"
     curl https://install.meteor.com | /bin/sh
     meteor npm install
