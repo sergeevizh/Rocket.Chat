@@ -39,6 +39,7 @@ steps:
     export HOME=meteor
     mkdir $HOME
     echo $HOME
+    env
     export PATH="$HOME/.meteor:$PATH"
     curl https://install.meteor.com | /bin/sh
     meteor npm install
