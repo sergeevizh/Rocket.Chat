@@ -38,6 +38,8 @@ steps:
   - |
     apt update && apt install curl git python g++ build-essential bzip2 -y
     mkdir meteor
+    env
+    ls -la
     curl https://install.meteor.com | /bin/sh
     meteor npm install
     set +e
