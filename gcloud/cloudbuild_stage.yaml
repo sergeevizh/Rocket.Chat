@@ -36,8 +36,7 @@ steps:
   - '-c'
   - |
     apt update && apt install curl git python g++ build-essential bzip2 -y
-    if [ ! -e "/drone/.meteor/meteor" ]; then export HOME=/drone; curl https://install.meteor.com | sed s/--progress-bar/-sL/g | /bin/sh; fi
-    which meteor
+    curl https://install.meteor.com | /bin/sh
     meteor npm install
     set +e
     meteor add rocketchat:lib
