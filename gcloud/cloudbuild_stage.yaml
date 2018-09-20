@@ -63,9 +63,9 @@ steps:
 
 # BUILD AND PUSH IMAGE
 - name: 'gcr.io/cloud-builders/docker'
-  args: [ 'build', '--pull', '-t', 'gcr.io/$PROJECT_ID/{{ IMAGE_NAME }}:stage', '.' ]
+  args: [ 'build', '--pull', '-t', 'gcr.io/$PROJECT_ID/rocketchat:stage', '.', '-f', '.docker/Dockerfile' ]
 - name: 'gcr.io/cloud-builders/docker'
-  args: [ 'push', 'gcr.io/$PROJECT_ID/{{ IMAGE_NAME }}:stage' ]
+  args: [ 'push', 'gcr.io/$PROJECT_ID/rocketchat:stage' ]
 
 # # UPGRADE KONTENA STACK
 # - name: 'kontena/cli'
