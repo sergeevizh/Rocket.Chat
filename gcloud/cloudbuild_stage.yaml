@@ -30,22 +30,14 @@ steps:
   - name: 'ssh'
     path: /root/.ssh
 
-# - name: 'ubuntu:16.04'
-#   entrypoint: 'bash'
-#   args:
-#   - '-c'
-#   - |
-#     apt-get -qq update && apt-get -qq install curl git python g++ build-essential bzip2 -y
-#     export HOME=meteor
-#     mkdir $$HOME
-#     export PATH="$$HOME/.meteor:$$PATH"
-#     curl https://install.meteor.com | /bin/sh
-#     meteor npm install
-#     mkdir build
-#     meteor build --allow-superuser --server-only build.tar.gz
-#   volumes:
-#   - name: 'ssh'
-#     path: /root/.ssh    
+- name: 'devgeniem/meteor-builder'
+  entrypoint: 'bash'
+  args:
+  - '-c'
+  - './build_bundle.sh'
+  volumes:
+  - name: 'ssh'
+    path: /root/.ssh    
 
 
 # WEBPACK
@@ -59,10 +51,10 @@ steps:
 #    ./node_modules/webpack/bin/webpack.js
 
 # BUILD AND PUSH IMAGE
-- name: 'gcr.io/cloud-builders/docker'
-  args: [ 'build', '--pull', '-t', 'gcr.io/$PROJECT_ID/rocketchat:stage', '.', '-f', '.docker/Dockerfile.selfbuild' ]
-- name: 'gcr.io/cloud-builders/docker'
-  args: [ 'push', 'gcr.io/$PROJECT_ID/rocketchat:stage' ]
+# - name: 'gcr.io/cloud-builders/docker'
+#   args: [ 'build', '--pull', '-t', 'gcr.io/$PROJECT_ID/rocketchat:stage', '.', '-f', '.docker/Dockerfile.selfbuild' ]
+# - name: 'gcr.io/cloud-builders/docker'
+#   args: [ 'push', 'gcr.io/$PROJECT_ID/rocketchat:stage' ]
 
 # # UPGRADE KONTENA STACK
 # - name: 'kontena/cli'
