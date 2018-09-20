@@ -41,11 +41,8 @@ steps:
     export PATH="$$HOME/.meteor:$$PATH"
     curl https://install.meteor.com | /bin/sh
     meteor npm install
-    set +e
-    meteor add rocketchat:lib
-    set -e
     mkdir build
-    meteor build --allow-superuser --server-only build
+    meteor build --allow-superuser --server-only build.tar.gz
   volumes:
   - name: 'ssh'
     path: /root/.ssh    
