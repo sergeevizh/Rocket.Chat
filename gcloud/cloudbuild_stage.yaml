@@ -35,12 +35,13 @@ steps:
   args:
   - '-c'
   - |
-    apt -qq update && apt -qq install curl git python g++ build-essential bzip2 -y
+    apt-get -qq update && apt-get -qq install curl git python g++ build-essential bzip2 -y
     export HOME=meteor
     mkdir $HOME
     export PATH="$HOME/.meteor:$PATH"
+    echo ----------------------------
     echo $HOME
-    env
+    echo ----------------------------
     curl https://install.meteor.com | /bin/sh
     meteor npm install
     set +e
