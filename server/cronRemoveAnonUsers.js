@@ -2,7 +2,6 @@
 
 function removeAnonymousUsers() {
 	const anonymousUsers = RocketChat.models.Users.findExpiredAnonymousUsers().fetch();
-	console.log('anon user found', anonymousUsers);
 	anonymousUsers.forEach(user => {
 		RocketChat.models.Subscriptions.removeByUserId(user._id);
 		RocketChat.models.Users.removeById(user._id);
