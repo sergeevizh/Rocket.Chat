@@ -50,8 +50,8 @@ Meteor.methods({
 				}
 				if (record._user.roles) { // Skip admins and mods
 					return (!record._user.roles.includes('admin') &&
-						!record._user.roles.includes('expert') &&
-						!record._user.roles.includes('moderator'));
+						!record._user.roles.includes('ngo-expert') &&
+						!record._user.roles.includes('ngo-moderator'));
 				}
 				return true;
 			};
