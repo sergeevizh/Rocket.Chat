@@ -14,13 +14,14 @@ Meteor.methods({
 
 		// TODO we should have a 'beforeJoinRoom' call back so external services can do their own validations
 		const user = Meteor.user();
+		const userIsAdmin = user.roles.indexOf('admin') > -1;
 		if (room.tokenpass && user && user.services && user.services.tokenpass) {
 			const balances = RocketChat.updateUserTokenpassBalances(user);
 
 			if (!RocketChat.Tokenpass.validateAccess(room.tokenpass, balances)) {
 				throw new Meteor.Error('error-not-allowed', 'Token required', { method: 'joinRoom' });
 			}
-		} else {
+		} else if (!userIsAdmin) {
 			if ((room.t !== 'c') || (RocketChat.authz.hasPermission(Meteor.userId(), 'view-c-room') !== true)) {
 				throw new Meteor.Error('error-not-allowed', 'Not allowed', { method: 'joinRoom' });
 			}
