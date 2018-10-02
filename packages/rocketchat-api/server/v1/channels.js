@@ -801,8 +801,12 @@ RocketChat.API.v1.addRoute('channels.setType', { authRequired: true }, {
 
 RocketChat.API.v1.addRoute('channels.setMaxUserAmount', { authRequired: true }, {
 	post() {
-		if (this.bodyParams.maxUserAmount && typeof this.bodyParams.maxUserAmount !== 'number') {
-			return RocketChat.API.v1.failure('The bodyParam "maxUserAmount" should be a number');
+		if ((this.bodyParams.maxUserAmount && typeof this.bodyParams.maxUserAmount !== 'number') ||
+			this.bodyParams.maxUserAmount <= 0) {
+			return RocketChat.API.v1.failure('The bodyParam "maxUserAmount" should be a number and above 0');
+		}
+		if (!this.bodyParams.maxUserAmount) {
+			return RocketChat.API.v1.failure('The bodyParam "maxUserAmount" is missing');
 		}
 
 		const findResult = findChannelByIdOrName({ params: this.requestParams() });

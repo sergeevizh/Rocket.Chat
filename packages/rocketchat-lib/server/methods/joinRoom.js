@@ -29,13 +29,12 @@ Meteor.methods({
 				throw new Meteor.Error('error-code-invalid', 'Invalid Room Password', { method: 'joinRoom' });
 			}
 		}
-
 		// Check if user already in room
 		if (room.usernames && room.usernames.includes(user.username)) {
 			return;
 		}
 
-		// Check if chat room has room for the user
+		// Check if chat room has space for the user
 		if (room.maxUserAmount) {
 			const filter = (record) => {
 				if (!record._user) {
@@ -55,7 +54,6 @@ Meteor.methods({
 				}
 				return true;
 			};
-
 			const records = RocketChat.models.Subscriptions.findByRoomId(rid).fetch();
 			const filtered = records.filter(filter);
 			const amount = filtered.length;
