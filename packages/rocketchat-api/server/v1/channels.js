@@ -18,7 +18,7 @@ function findChannelByIdOrName({ params, checkedArchived = true, returnUsernames
 		room = RocketChat.models.Rooms.findOneByName(params.roomName, { fields });
 	}
 
-	if (!room || room.t !== 'c') {
+	if (!room) {
 		throw new Meteor.Error('error-room-not-found', 'The required "roomId" or "roomName" param provided does not match any channel');
 	}
 
@@ -801,8 +801,12 @@ RocketChat.API.v1.addRoute('channels.setType', { authRequired: true }, {
 
 RocketChat.API.v1.addRoute('channels.setMaxUserAmount', { authRequired: true }, {
 	post() {
-		if (this.bodyParams.maxUserAmount && typeof this.bodyParams.maxUserAmount !== 'number') {
-			return RocketChat.API.v1.failure('The bodyParam "maxUserAmount" should be a number');
+		if ((this.bodyParams.maxUserAmount && typeof this.bodyParams.maxUserAmount !== 'number') ||
+			this.bodyParams.maxUserAmount <= 0) {
+			return RocketChat.API.v1.failure('The bodyParam "maxUserAmount" should be a number and above 0');
+		}
+		if (!this.bodyParams.maxUserAmount) {
+			return RocketChat.API.v1.failure('The bodyParam "maxUserAmount" is missing');
 		}
 
 		const findResult = findChannelByIdOrName({ params: this.requestParams() });
