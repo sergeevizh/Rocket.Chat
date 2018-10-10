@@ -1,3 +1,14 @@
+### Geniem local development setup guide for Mac
+1) `clone https://github.com/devgeniem/Rocket.Chat.git`
+2) Install Meteor from https://www.meteor.com/install
+3) Install MongoDB from https://www.mongodb.com/download-center/v2/community
+4) Create MongoDB default data dir `~/data/db` if missing
+5) Restore database with `mongorestore --gzip --archive=dump.tar.gz`
+6) `mongo` to access local database, `show dbs` inside mongo CLI to check if `client-ngo` database exists
+7) Start development with `export MONGO_URL=mongodb://localhost:27017/client-ngo && meteor` (this will take a while)
+
+#### TODO: guide how to access staging database for development instead of local
+
 ![Rocket.Chat logo](https://rocket.chat/images/logo/logo-dark.svg?v3)
 
 # The Ultimate Open Source WebChat Platform
