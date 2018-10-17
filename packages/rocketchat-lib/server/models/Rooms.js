@@ -507,6 +507,18 @@ class ModelRooms extends RocketChat.models._Base {
 		return this.update(query, update, { multi: true });
 	}
 
+	removeUserIdStringFromAllQueuesByUserId(_id) {
+		const query = {queue: _id};
+
+		const update = {
+			$pull: {
+				queue: _id
+			}
+		};
+
+		return this.update(query, update, { multi: true });
+	}
+
 	removeUsernameByName(name, username) {
 		const query = {name};
 

@@ -48,7 +48,8 @@ RocketChat.API.v1.addRoute('livechat/department/:_id', { authRequired: true }, {
 
 			return RocketChat.API.v1.success({
 				department: RocketChat.models.LivechatDepartment.findOneById(this.urlParams._id),
-				agents: RocketChat.models.LivechatDepartmentAgents.find({ departmentId: this.urlParams._id }).fetch()
+				agents: RocketChat.models.LivechatDepartmentAgents.find({ departmentId: this.urlParams._id }).fetch(),
+				online: RocketChat.models.LivechatDepartmentAgents.getOnlineForDepartment(this.urlParams._id).fetch()
 			});
 		} catch (e) {
 			return RocketChat.API.v1.failure(e.error);
