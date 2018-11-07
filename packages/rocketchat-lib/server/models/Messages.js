@@ -530,7 +530,8 @@ RocketChat.models.Messages = new class extends RocketChat.models._Base {
 			msg: message,
 			u: {
 				_id: user._id,
-				username: user.username
+				username: user.username,
+				name: user.name
 			},
 			groupable: false
 		};

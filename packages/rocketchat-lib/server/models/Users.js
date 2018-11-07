@@ -255,8 +255,8 @@ class ModelUsers extends RocketChat.models._Base {
 		queryDate.setMinutes(queryDate.getMinutes() - 5);
 		const query = {
 			roles: 'anonymous',
-			status: 'offline',
-			createdAt: { $lte: queryDate }
+			statusConnection: 'offline',
+			_updatedAt: { $lte: queryDate }
 		};
 		return this.find(query, options);
 	}
@@ -637,47 +637,47 @@ Find users to send a message by email if:
 
 RocketChat.models.Users = new ModelUsers(Meteor.users, true);
 
-RocketChat.models.Users.on('changed', function(type, user) {
-	if (!RocketChat.offlineTimeouts) {
-		RocketChat.offlineTimeouts = {};
-	}
+// RocketChat.models.Users.on('changed', function(type, user) {
+// 	if (!RocketChat.offlineTimeouts) {
+// 		RocketChat.offlineTimeouts = {};
+// 	}
 
-	if (user.status === user.statusDefault &&
-		type === 'updated' && user.status !== 'offline') {
-		// User came online - clear timeout
-		if (RocketChat.offlineTimeouts && RocketChat.offlineTimeouts[user._id]) {
-			Meteor.clearTimeout(RocketChat.offlineTimeouts[user._id]);
-			delete RocketChat.offlineTimeouts[user._id];
-		}
-	} else if (user.status === user.statusDefault &&
-		type === 'updated' && user.status === 'offline') {
+// 	if (user.status === user.statusDefault &&
+// 		type === 'updated' && user.status !== 'offline') {
+// 		// User came online - clear timeout
+// 		if (RocketChat.offlineTimeouts && RocketChat.offlineTimeouts[user._id]) {
+// 			Meteor.clearTimeout(RocketChat.offlineTimeouts[user._id]);
+// 			delete RocketChat.offlineTimeouts[user._id];
+// 		}
+// 	} else if (user.status === user.statusDefault &&
+// 		type === 'updated' && user.status === 'offline') {
 
-		// Skip admins and moderators
-		if (user.roles.includes('admin') || user.roles.includes('moderator')) {
-			return;
-		}
+// 		// Skip admins and moderators
+// 		if (user.roles.includes('admin') || user.roles.includes('moderator')) {
+// 			return;
+// 		}
 
-		// Skip if user already has a timeout
-		if (RocketChat.offlineTimeouts[user._id]) {
-			return;
-		}
+// 		// Skip if user already has a timeout
+// 		if (RocketChat.offlineTimeouts[user._id]) {
+// 			return;
+// 		}
 
-		// Kick offline user from channels and queues after 10 min
-		RocketChat.offlineTimeouts[user._id] = Meteor.setTimeout(function() {
-			delete RocketChat.offlineTimeouts[user._id];
+// 		// Kick offline user from channels and queues after 10 min
+// 		RocketChat.offlineTimeouts[user._id] = Meteor.setTimeout(function() {
+// 			delete RocketChat.offlineTimeouts[user._id];
 
-			// Remove from chat rooms
-			const nonQueued = RocketChat.models.Subscriptions.findNonQueuedByUserId(user._id).fetch();
-			nonQueued.forEach((sub) => {
-				RocketChat.removeUserFromRoom(sub.rid, user);
-			});
+// 			// Remove from chat rooms
+// 			const nonQueued = RocketChat.models.Subscriptions.findNonQueuedByUserId(user._id).fetch();
+// 			nonQueued.forEach((sub) => {
+// 				RocketChat.removeUserFromRoom(sub.rid, user);
+// 			});
 
-			// Remove from queues
-			const queued = RocketChat.models.Subscriptions.findQueuedByUserId(user._id).fetch();
-			queued.forEach((sub) => {
-				RocketChat.models.Subscriptions.removeByRoomIdAndUserId(sub.rid, user._id);
-				RocketChat.models.Rooms.removeUserFromQueue(sub.rid, user._id);
-			});
-		}, 600000);
-	}
-});
+// 			// Remove from queues
+// 			const queued = RocketChat.models.Subscriptions.findQueuedByUserId(user._id).fetch();
+// 			queued.forEach((sub) => {
+// 				RocketChat.models.Subscriptions.removeByRoomIdAndUserId(sub.rid, user._id);
+// 				RocketChat.models.Rooms.removeUserFromQueue(sub.rid, user._id);
+// 			});
+// 		}, 600000);
+// 	}
+// });
