@@ -540,8 +540,12 @@ RocketChat.models.Messages = new class extends RocketChat.models._Base {
 			record.unread = true;
 		}
 
-		// fetch all relevant user info if a user is passed as part of the extraData arg
-		if (extraData.u) {
+		// fetch all relevant user info if an acting user is passed as part of the extraData arg (e.g. when admin removes another user from a room)
+		if (extraData && extraData.u) {
+
+			// store the target user in another field
+			extraData.target = Object.assign({}, record.u);
+
 			const actingUser = RocketChat.models.Users.findById(extraData.u._id).fetch()[0];
 			extraData.u = { _id: actingUser._id, username: actingUser.username, name: actingUser.name };
 		}
@@ -554,22 +558,22 @@ RocketChat.models.Messages = new class extends RocketChat.models._Base {
 	}
 
 	createUserJoinWithRoomIdAndUser(roomId, user, extraData) {
-		const message = user.name;
+		const message = user.username;
 		return this.createWithTypeRoomIdMessageAndUser('uj', roomId, message, user, extraData);
 	}
 
 	createUserLeaveWithRoomIdAndUser(roomId, user, extraData) {
-		const message = user.name;
+		const message = user.username;
 		return this.createWithTypeRoomIdMessageAndUser('ul', roomId, message, user, extraData);
 	}
 
 	createUserRemovedWithRoomIdAndUser(roomId, user, extraData) {
-		const message = user.name;
+		const message = user.username;
 		return this.createWithTypeRoomIdMessageAndUser('ru', roomId, message, user, extraData);
 	}
 
 	createUserAddedWithRoomIdAndUser(roomId, user, extraData) {
-		const message = user.name;
+		const message = user.username;
 		return this.createWithTypeRoomIdMessageAndUser('au', roomId, message, user, extraData);
 	}
 
@@ -578,52 +582,52 @@ RocketChat.models.Messages = new class extends RocketChat.models._Base {
 	}
 
 	createUserMutedWithRoomIdAndUser(roomId, user, extraData) {
-		const message = user.name;
+		const message = user.username;
 		return this.createWithTypeRoomIdMessageAndUser('user-muted', roomId, message, user, extraData);
 	}
 
 	createUserUnmutedWithRoomIdAndUser(roomId, user, extraData) {
-		const message = user.name;
+		const message = user.username;
 		return this.createWithTypeRoomIdMessageAndUser('user-unmuted', roomId, message, user, extraData);
 	}
 
 	createNewModeratorWithRoomIdAndUser(roomId, user, extraData) {
-		const message = user.name;
+		const message = user.username;
 		return this.createWithTypeRoomIdMessageAndUser('new-moderator', roomId, message, user, extraData);
 	}
 
 	createModeratorRemovedWithRoomIdAndUser(roomId, user, extraData) {
-		const message = user.name;
+		const message = user.username;
 		return this.createWithTypeRoomIdMessageAndUser('moderator-removed', roomId, message, user, extraData);
 	}
 
 	createNewOwnerWithRoomIdAndUser(roomId, user, extraData) {
-		const message = user.name;
+		const message = user.username;
 		return this.createWithTypeRoomIdMessageAndUser('new-owner', roomId, message, user, extraData);
 	}
 
 	createOwnerRemovedWithRoomIdAndUser(roomId, user, extraData) {
-		const message = user.name;
+		const message = user.username;
 		return this.createWithTypeRoomIdMessageAndUser('owner-removed', roomId, message, user, extraData);
 	}
 
 	createNewLeaderWithRoomIdAndUser(roomId, user, extraData) {
-		const message = user.name;
+		const message = user.username;
 		return this.createWithTypeRoomIdMessageAndUser('new-leader', roomId, message, user, extraData);
 	}
 
 	createLeaderRemovedWithRoomIdAndUser(roomId, user, extraData) {
-		const message = user.name;
+		const message = user.username;
 		return this.createWithTypeRoomIdMessageAndUser('leader-removed', roomId, message, user, extraData);
 	}
 
 	createSubscriptionRoleAddedWithRoomIdAndUser(roomId, user, extraData) {
-		const message = user.name;
+		const message = user.username;
 		return this.createWithTypeRoomIdMessageAndUser('subscription-role-added', roomId, message, user, extraData);
 	}
 
 	createSubscriptionRoleRemovedWithRoomIdAndUser(roomId, user, extraData) {
-		const message = user.name;
+		const message = user.username;
 		return this.createWithTypeRoomIdMessageAndUser('subscription-role-removed', roomId, message, user, extraData);
 	}
 
