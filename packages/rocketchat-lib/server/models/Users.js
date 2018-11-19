@@ -252,7 +252,7 @@ class ModelUsers extends RocketChat.models._Base {
 
 	findExpiredAnonymousUsers(options) {
 		const queryDate = new Date();
-		queryDate.setMinutes(queryDate.getMinutes() - 5);
+		queryDate.setMinutes(queryDate.getMinutes() - 15);
 		const query = {
 			roles: 'anonymous',
 			statusConnection: 'offline',
