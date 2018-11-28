@@ -30,6 +30,10 @@ class ModelUsers extends RocketChat.models._Base {
 		return this.findOne(query, options);
 	}
 
+	findOneByName(name, options) {
+		return this.findOne({ name }, options);
+	}
+
 	findOneByEmailAddress(emailAddress, options) {
 		const query =	{'emails.address': new RegExp(`^${ s.escapeRegExp(emailAddress) }$`, 'i')};
 
