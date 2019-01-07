@@ -11,6 +11,10 @@ class LivechatDepartmentAgents extends RocketChat.models._Base {
 		return this.find({ departmentId });
 	}
 
+	isUserAgentInDepartment(userId, departmentId) {
+		return !!this.findOne({ departmentId, agentId: userId });
+	}
+
 	saveAgent(agent) {
 		return this.upsert({
 			agentId: agent.agentId,
