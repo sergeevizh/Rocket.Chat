@@ -126,7 +126,7 @@ class ModelRooms extends RocketChat.models._Base {
 				if (item._room) {
 					return { ...item._room, userRo: item.ro };
 				}
-				console.log('Empty Room for Subscription', item);
+				console.log('Empty Room for Subscription', item._id);
 			});
 			data = data.filter(item => item);
 			return this.arrayToCursor(this.processQueryOptionsOnResult(data, options));
@@ -151,7 +151,7 @@ class ModelRooms extends RocketChat.models._Base {
 				if (item._room) {
 					return item._room;
 				}
-				console.log('Empty Room for Subscription', item);
+				console.log('Empty Room for Subscription', item._id);
 			});
 			data = data.filter(item => item && item._updatedAt > _updatedAt);
 			return this.arrayToCursor(this.processQueryOptionsOnResult(data, options));
