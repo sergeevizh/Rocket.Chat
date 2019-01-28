@@ -562,6 +562,12 @@ RocketChat.models.Messages = new class extends RocketChat.models._Base {
 		return this.createWithTypeRoomIdMessageAndUser('uj', roomId, message, user, extraData);
 	}
 
+	createUserJoinWithRoomIdAndUsername(roomId, username, extraData) {
+		const message = username;
+		const user = RocketChat.models.Users.findOneByUsername(username);
+		return this.createWithTypeRoomIdMessageAndUser('uj', roomId, message, user, extraData);
+	}
+
 	createUserLeaveWithRoomIdAndUser(roomId, user, extraData) {
 		const message = user.username;
 		return this.createWithTypeRoomIdMessageAndUser('ul', roomId, message, user, extraData);

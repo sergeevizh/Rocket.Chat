@@ -776,20 +776,18 @@ class ModelRooms extends RocketChat.models._Base {
 		return this.update({ _id }, update);
 	}
 
-	addUserToQueue(_id, userId) {
+	addUsernameToQueueById(_id, username, muted) {
 		const query = {
 			_id
 		};
-		const room = this.findOne(query);
-		if (room.queue && room.queue.includes(userId)) {
-			// User already in queue
-			return;
-		}
 		const update = {
-			$push: {
-				queue: userId
+			$addToSet: {
+				queue: username
 			}
 		};
+		if (muted) {
+			update.$addToSet.muted = username;
+		}
 		return this.update(query, update);
 	}
 
@@ -891,6 +889,23 @@ class ModelRooms extends RocketChat.models._Base {
 		};
 
 		return this.remove(query);
+	}
+
+	moveUserFromQueueToRoomByRoomIdAndUsername(rid, username) {
+		const query = {
+			_id: rid
+		};
+
+		const update = {
+			$addToSet: {
+				usernames: username
+			},
+			$pull: {
+				queue: username
+			}
+		};
+
+		return this.update(query, update);
 	}
 }
 
