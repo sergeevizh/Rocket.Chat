@@ -75,6 +75,41 @@ class LivechatInquiry extends RocketChat.models._Base {
 
 		return this.update(query, update);
 	}
+
+	findNextForDepartment(departmentId) {
+		const inquiries = this.find({ department: departmentId }, { sort: { ts: 1 } }).fetch();
+		return inquiries && inquiries[0];
+	}
+
+	addAgentToInquiriesByDepartmentId(departmentId, agentId) {
+		console.log(`Adding agent ${ agentId } to the agent set of existing inquiries for department ${ departmentId }!`);
+		const query = {
+			department: departmentId
+		};
+
+		const update = {
+			$addToSet: {
+				agents: agentId
+			}
+		};
+
+		return this.update(query, update, { multi: true });
+	}
+
+	removeAgentFromInquiriesByDepartmentId(departmentId, agentId) {
+		console.log(`Removing agent ${ agentId } from the agents set of inquiries for department ${ departmentId }!`);
+		const query = {
+			department: departmentId
+		};
+
+		const update = {
+			$pull: {
+				agents: agentId
+			}
+		};
+
+		return this.update(query, update, { multi: true });
+	}
 }
 
 RocketChat.models.LivechatInquiry = new LivechatInquiry();

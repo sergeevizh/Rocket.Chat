@@ -49,6 +49,7 @@ class LivechatDepartment extends RocketChat.models._Base {
 		// remove other agents
 		_.difference(savedAgents, agentsToSave).forEach((agentId) => {
 			RocketChat.models.LivechatDepartmentAgents.removeByDepartmentIdAndAgentId(_id, agentId);
+			RocketChat.models.LivechatInquiry.removeAgentFromInquiriesByDepartmentId(_id, agentId);
 		});
 
 		agents.forEach((agent) => {
@@ -59,6 +60,7 @@ class LivechatDepartment extends RocketChat.models._Base {
 				count: agent.count ? parseInt(agent.count) : 0,
 				order: agent.order ? parseInt(agent.order) : 0
 			});
+			RocketChat.models.LivechatInquiry.addAgentToInquiriesByDepartmentId(_id, agent.agentId);
 		});
 
 		return _.extend(record, { _id });
