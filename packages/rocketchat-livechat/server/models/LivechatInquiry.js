@@ -78,7 +78,7 @@ class LivechatInquiry extends RocketChat.models._Base {
 
 	findNextForDepartment(departmentId) {
 		const inquiries = this.find({ department: departmentId }, { sort: { ts: 1 } }).fetch();
-		return (inquiries||[])[0];
+		return inquiries && inquiries[0];
 	}
 
 	addAgentToInquiriesByDepartmentId(departmentId, agentId) {
