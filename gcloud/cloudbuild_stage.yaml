@@ -30,11 +30,20 @@ steps:
   - name: 'ssh'
     path: /root/.ssh
 
+- name: gcr.io/cloud-builders/gsutil
+  args: ['cp', 'gs://oa2018-stage/packages.tar.gz', 'packages.tar.gz']
+
+- name: gcr.io/cloud-builders/gsutil
+  args: ['cp', 'gs://oa2018-stage/meteors.tar.gz', 'meteors.tar.gz']
+
+
 - name: 'devgeniem/meteor-builder'
   entrypoint: 'bash'
   args:
   - '-c'
   - |
+    tar xzf packages.tar.gz
+    tar xzf meteors.tar.gz
     ./build_bundle.sh
     tar czf packages.tar.gz packages
     tar czf meteors.tar.gz .meteor
