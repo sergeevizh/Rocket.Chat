@@ -34,11 +34,19 @@ steps:
   entrypoint: 'bash'
   args:
   - '-c'
-  - './build_bundle.sh'
+  - |
+    ./build_bundle.sh
+    tar czf packages.tar.gz packages
+    tar czf meteors.tar.gz .meteor
   volumes:
   - name: 'ssh'
-    path: /root/.ssh    
+    path: /root/.ssh
 
+- name: gcr.io/cloud-builders/gsutil
+  args: ['cp', 'packages.tar.gz', 'gs://oa2018-stage/packages.tar.gz']
+
+- name: gcr.io/cloud-builders/gsutil
+  args: ['cp', 'meteors.tar.gz', 'gs://oa2018-stage/meteors.tar.gz']
 
 # WEBPACK
 # - name: 'gcr.io/cloud-builders/npm'
@@ -67,4 +75,6 @@ steps:
 #   secretEnv:
 #     # encryted access token to kontena
 #     KONTENA_TOKEN: CiQA4j4haRTCAuU1Klk0GBbPucq2JjVzH1CMMUH+WluMy5N93XkSaQDqV+JInB3iIVhb/6L1fuX4MNzyZehyotAHrYQZHqykjDW5kdM7ndH70WdnjhlPMuPUczlP1qQ7K2s5A1gaPXfQnqC1/ILiu2DO0w0WTrGfjzXabAMxNTEoX1Q252vU7PdSsvUmvziyzg==
-timeout: 1800s
+timeout: 18000s
+options:
+  machineType: 'N1_HIGHCPU_8'
