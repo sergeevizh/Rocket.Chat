@@ -118,15 +118,6 @@ RocketChat.models.Subscriptions.on('changed', (type, subscription/*, diff*/) => 
 	if (type === 'inserted' || type === 'removed') {
 		const room = RocketChat.models.Rooms.findOneById(subscription.rid);
 		if (room) {
-			room.userRo = !!subscription.ro;
-			room.queuing = !!subscription.queuing;
-			RocketChat.Notifications.notifyUserInThisInstance(subscription.u._id, 'rooms-changed', type, roomMap({_room: room}));
-		}
-	} else if (type === 'changed') {
-		const room = RocketChat.models.Rooms.findOneById(subscription.rid);
-		if (room) {
-			room.userRo = !!subscription.ro;
-			room.queuing = !!subscription.queuing;
 			RocketChat.Notifications.notifyUserInThisInstance(subscription.u._id, 'rooms-changed', type, roomMap({_room: room}));
 		}
 	}

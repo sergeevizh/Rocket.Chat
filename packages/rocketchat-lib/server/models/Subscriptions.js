@@ -639,7 +639,9 @@ class ModelSubscriptions extends RocketChat.models._Base {
 				_id: user._id,
 				username: user.username,
 				name: user.name
-			}
+			},
+			queuing: false,
+			ro: false
 		};
 
 		_.extend(subscription, extraData);
@@ -679,56 +681,34 @@ class ModelSubscriptions extends RocketChat.models._Base {
 
 		return this.remove(query);
 	}
+
+	setToActiveByUsernameAndRoomId(username, rid) {
+		const query = {
+			'u.username': username,
+			rid
+		};
+
+		const update = {
+			$set: {
+				queuing: false,
+				ro: false,
+				open: true
+			}
+		};
+
+		return this.update(query, update);
+	}
 }
 
 RocketChat.models.Subscriptions = new ModelSubscriptions('subscription', true);
 
-RocketChat.models.Subscriptions.on('changed', function(type, sub) {
-	if (type === 'removed' && sub.queuing) {
-		// User left queue - remove from room data
-		if (sub._room.queue && sub._room.queue.includes(sub._user._id)) {
-			RocketChat.models.Rooms.removeUserFromQueue(sub.rid, sub.u._id);
-		}
-	}
-	if (type === 'removed' && !sub.queuing) {
-		// User left room - check if there is a queue
-		const room = sub._room;
-		if (room.maxUserAmount && room.queue && room.queue.length > 0) {
-			// Calculate how many users are non-admins/non-moderators
-			const filter = (record) => {
-				if (!record._user) {
-					console.log('Subscription without user - remove', record._id);
-					RocketChat.models.Subscriptions.removeById(record._id);
-					return false;
-				}
-				if (!room.usernames.includes(record._user.username)) {
-					return false;
-				}
-				if (record.ro === true) { // User is queuing
-					return false;
-				}
-				if (record._user.roles) { // Skip admins and mods
-					return (!record._user.roles.includes('admin') && !record._user.roles.includes('moderator'));
-				}
-				return true;
-			};
-
-			const records = RocketChat.models.Subscriptions.findByRoomId(room._id).fetch();
-			const nonAdminUsers = records.filter(filter);
-			if (nonAdminUsers.length < room.maxUserAmount) {
-				const sub = RocketChat.models.Subscriptions.findOneByRoomIdAndUserId(room._id, room.queue[0]);
-				if (sub) {
-					// Move user from queue to room
-					RocketChat.models.Rooms.removeUserFromQueue(room._id, sub.u._id);
-					RocketChat.models.Subscriptions.moveUserFromQueueToRoom(sub._id);
-					RocketChat.models.Messages.createUserJoinWithRoomIdAndUser(room._id, sub.u, {
-						ts: new Date()
-					});
-				} else {
-					// Subscription not found - remove from queue
-					RocketChat.models.Rooms.removeUserFromQueue(room._id, room.queue[0]);
-				}
-			}
+// Add subscription change listeners to and update room accordingly
+RocketChat.models.Subscriptions.on('changed', (type, subscription) => {
+	if (type === 'removed') {
+		try {
+			RocketChat.RoomQueues.processQueue(subscription.rid);
+		} catch (err) {
+			console.log(`Failed to process queue for room ${ subscription.rid }! Cause:`, err);
 		}
 	}
 });

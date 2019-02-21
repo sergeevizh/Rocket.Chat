@@ -18,7 +18,8 @@ Meteor.methods({
 		} else {
 			console.log('remove user from queue');
 			RocketChat.models.Subscriptions.removeByRoomIdAndUserId(rid, Meteor.userId());
-			return RocketChat.models.Rooms.removeUserFromQueue(rid, Meteor.userId());
+			RocketChat.models.Rooms.removeUserFromQueue(rid, Meteor.userId());
+			return;
 		}
 	}
 });

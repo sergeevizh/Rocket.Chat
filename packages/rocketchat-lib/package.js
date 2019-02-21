@@ -102,6 +102,8 @@ Package.onUse(function(api) {
 	api.addFiles('server/functions/updateMessage.js', 'server');
 	api.addFiles('server/functions/validateCustomFields.js', 'server');
 	api.addFiles('server/functions/Notifications.js', 'server');
+	api.addFiles('server/functions/RoomQueues.js', 'server');
+	api.addFiles('server/functions/addUserToQueue.js', 'server');
 
 	// SERVER LIB
 	api.addFiles('server/lib/configLogger.js', 'server');
