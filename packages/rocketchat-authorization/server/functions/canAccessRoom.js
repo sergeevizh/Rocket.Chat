@@ -22,6 +22,10 @@ export const roomAccessValidators = [
 			return true;
 		}
 	},
+	function(room, user) {
+		const isAdmin = user.roles.indexOf('admin') > -1;
+		return isAdmin;
+	},
 ];
 
 export const canAccessRoom = (room, user, extraData) => roomAccessValidators.some((validator) => validator(room, user, extraData));

@@ -625,12 +625,23 @@ export class Messages extends Base {
 			u: {
 				_id: user._id,
 				username: user.username,
+				name: user.name,
 			},
 			groupable: false,
 		};
 
 		if (settings.get('Message_Read_Receipt_Enabled')) {
 			record.unread = true;
+		}
+
+		// fetch all relevant user info if an acting user is passed as part of the extraData arg (e.g. when admin removes another user from a room)
+		if (extraData && extraData.u) {
+
+			// store the target user in another field
+			extraData.target = Object.assign({}, record.u);
+
+			const actingUser = RocketChat.models.Users.findById(extraData.u._id).fetch()[0];
+			extraData.u = { _id: actingUser._id, username: actingUser.username, name: actingUser.name };
 		}
 
 		_.extend(record, extraData);

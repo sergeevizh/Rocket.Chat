@@ -31,7 +31,46 @@ Meteor.methods({
 				throw new Meteor.Error('error-code-invalid', 'Invalid Room Password', { method: 'joinRoom' });
 			}
 		}
+		// Check if user already in room
+		if (room.usernames && room.usernames.includes(user.username)) {
+			return;
+		}
 
-		return RocketChat.addUserToRoom(rid, user);
+		// Check if chat room has space for the user
+		if (room.maxUserAmount) {
+			const filter = (record) => {
+				if (!record._user) {
+					console.log('Subscription without user', record._id);
+					return false;
+				}
+				if (!room.usernames || !room.usernames.includes(record._user.username)) {
+					return false;
+				}
+				if (record.ro === true) { // User is queuing
+					return false;
+				}
+				if (record._user.roles) { // Skip admins and mods
+					return (!record._user.roles.includes('admin') &&
+						!record._user.roles.includes('ngo-expert') &&
+						!record._user.roles.includes('ngo-moderator'));
+				}
+				return true;
+			};
+			const records = RocketChat.models.Subscriptions.findByRoomId(rid).fetch();
+			const filtered = records.filter(filter);
+			const amount = filtered.length;
+
+			if (room.maxUserAmount > amount && (!room.queue || room.queue.length === 0)) {
+				return RocketChat.addUserToRoom(rid, user);
+			} else if (room.queue && room.queue.includes(Meteor.userId())) {
+				// User already in queue
+				return;
+			} else {
+				RocketChat.models.Subscriptions.createWithRoomAndUser(room, user, { open: true, ro: true, queuing: true });
+				return RocketChat.models.Rooms.addUserToQueue(rid, Meteor.userId());
+			}
+		} else {
+			return RocketChat.addUserToRoom(rid, user);
+		}
 	},
 });

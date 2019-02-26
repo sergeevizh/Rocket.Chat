@@ -2,7 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import _ from 'underscore';
 import s from 'underscore.string';
 
-RocketChat.createRoom = function(type, name, owner, members, readOnly, extraData = {}) {
+RocketChat.createRoom = function(type, name, owner, members, readOnly, extraData = {}, maxUserAmount = 999) {
 	name = s.trim(name);
 	owner = s.trim(owner);
 	members = [].concat(members);
@@ -40,6 +40,7 @@ RocketChat.createRoom = function(type, name, owner, members, readOnly, extraData
 		ts: now,
 		ro: readOnly === true,
 		sysMes: readOnly !== true,
+		maxUserAmount,
 	});
 
 	if (type === 'd') {

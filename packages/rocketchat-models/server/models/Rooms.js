@@ -433,6 +433,30 @@ export class Rooms extends Base {
 		return this.update(query, update);
 	}
 
+	removeUserIdStringFromAllQueuesByUserId(_id) {
+		const query = { queue: _id };
+
+		const update = {
+			$pull: {
+				queue: _id,
+			},
+		};
+
+		return this.update(query, update, { multi: true });
+	}
+
+	removeUsernameByName(name, username) {
+		const query = { name };
+
+		const update = {
+			$pull: {
+				usernames: username,
+			},
+		};
+
+		return this.update(query, update);
+	}
+
 	incUsersCountByIds(ids, inc = 1) {
 		const query = {
 			_id: {
@@ -757,8 +781,67 @@ export class Rooms extends Base {
 		return this.update({ _id }, update);
 	}
 
+	addUserToQueue(_id, userId) {
+		const query = {
+			_id,
+		};
+		const room = this.findOne(query);
+		if (room.queue && room.queue.includes(userId)) {
+			// User already in queue
+			return;
+		}
+		const update = {
+			$push: {
+				queue: userId,
+			},
+		};
+		return this.update(query, update);
+	}
+
+	removeUserFromQueue(_id, userId) {
+		const query = {
+			_id,
+		};
+		const room = this.findOne(query);
+		if (!room.queue || room.queue === []) {
+			return;
+		}
+		const update = {
+			$pull: {
+				queue: userId,
+			},
+		};
+		return this.update(query, update);
+	}
+
+	clearQueuesOfActiveRooms() {
+		const query = {
+			archived: false,
+		};
+		const update = {
+			$set: {
+				queue: [],
+			},
+		};
+		return this.update(query, update);
+	}
+
+	setMaxUserAmountById(_id, maxUserAmount) {
+		const query = {
+			_id,
+		};
+
+		const update = {
+			$set: {
+				maxUserAmount,
+			},
+		};
+
+		return this.update(query, update);
+	}
+
 	// INSERT
-	createWithTypeNameUserAndUsernames(type, name, fname, user, usernames, extraData) {
+	createWithTypeNameUserAndUsernames(type, name, fname, user, usernames, extraData, maxUserAmount) {
 		const room = {
 			name,
 			fname,
@@ -770,7 +853,12 @@ export class Rooms extends Base {
 				_id: user._id,
 				username: user.username,
 			},
+			queue: [],
 		};
+
+		if (maxUserAmount) {
+			room.maxUserAmount = maxUserAmount;
+		}
 
 		_.extend(room, extraData);
 

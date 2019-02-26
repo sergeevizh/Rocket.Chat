@@ -1,0 +1,89 @@
+steps:
+
+# GITHUB KEY (Bob The Builder Bot)
+- name: 'gcr.io/cloud-builders/gcloud'
+  args:
+  - kms
+  - decrypt
+  - --ciphertext-file=gcloud/id_rsa_stage.enc
+  - --plaintext-file=/root/.ssh/id_rsa
+  - --location=global
+  - --keyring=infra
+  - --key=github-key
+  volumes:
+  - name: 'ssh'
+    path: /root/.ssh
+
+# GITHUB TO KNOWN_HOSTS
+- name: 'gcr.io/cloud-builders/git'
+  entrypoint: 'bash'
+  args:
+  - '-c'
+  - |
+    chmod 600 /root/.ssh/id_rsa
+    cat <<EOF >/root/.ssh/config
+    Hostname github.com
+    IdentityFile /root/.ssh/id_rsa
+    EOF
+    mv gcloud/known_hosts /root/.ssh/known_hosts
+  volumes:
+  - name: 'ssh'
+    path: /root/.ssh
+
+- name: gcr.io/cloud-builders/gsutil
+  args: ['cp', 'gs://oa2018-stage/packages.tar.gz', 'packages.tar.gz']
+
+- name: gcr.io/cloud-builders/gsutil
+  args: ['cp', 'gs://oa2018-stage/meteors.tar.gz', 'meteors.tar.gz']
+
+
+- name: 'devgeniem/meteor-builder'
+  entrypoint: 'bash'
+  args:
+  - '-c'
+  - |
+    tar xzf packages.tar.gz
+    tar xzf meteors.tar.gz
+    ./build_bundle.sh
+    tar czf packages.tar.gz packages
+    tar czf meteors.tar.gz .meteor
+  volumes:
+  - name: 'ssh'
+    path: /root/.ssh
+
+- name: gcr.io/cloud-builders/gsutil
+  args: ['cp', 'packages.tar.gz', 'gs://oa2018-stage/packages.tar.gz']
+
+- name: gcr.io/cloud-builders/gsutil
+  args: ['cp', 'meteors.tar.gz', 'gs://oa2018-stage/meteors.tar.gz']
+
+# WEBPACK
+# - name: 'gcr.io/cloud-builders/npm'
+#  entrypoint: 'bash'
+#  args:
+#  - '-c'
+#  - |
+#    cd ./web/app/themes/{{ THEME }}
+#    npm install
+#    ./node_modules/webpack/bin/webpack.js
+
+# BUILD AND PUSH IMAGE
+# - name: 'gcr.io/cloud-builders/docker'
+#   args: [ 'build', '--pull', '-t', 'gcr.io/$PROJECT_ID/rocketchat:stage', '.', '-f', '.docker/Dockerfile.selfbuild' ]
+# - name: 'gcr.io/cloud-builders/docker'
+#   args: [ 'push', 'gcr.io/$PROJECT_ID/rocketchat:stage' ]
+
+# # UPGRADE KONTENA STACK
+# - name: 'kontena/cli'
+#   args: [ 'stack', 'upgrade', '{{ KONTENA STACK NAME }}', 'kontena-stage.yml' ]
+#   env: [ 'KONTENA_GRID=stage', 'KONTENA_URL=https://misty-moon-7545.platforms.eu-west-1.kontena.cloud' ]
+#   secretEnv: [ 'KONTENA_TOKEN' ]
+
+# secrets:
+# - kmsKeyName: 'projects/geniem-stage/locations/global/keyRings/infra/cryptoKeys/kontena-key'
+#   secretEnv:
+#     # encryted access token to kontena
+#     KONTENA_TOKEN: CiQA4j4haRTCAuU1Klk0GBbPucq2JjVzH1CMMUH+WluMy5N93XkSaQDqV+JInB3iIVhb/6L1fuX4MNzyZehyotAHrYQZHqykjDW5kdM7ndH70WdnjhlPMuPUczlP1qQ7K2s5A1gaPXfQnqC1/ILiu2DO0w0WTrGfjzXabAMxNTEoX1Q252vU7PdSsvUmvziyzg==
+timeout: 18000s
+options:
+  machineType: 'N1_HIGHCPU_8'

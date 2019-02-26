@@ -61,7 +61,7 @@ Meteor.startup(function() {
 		{ _id: 'view-c-room',                   roles : ['admin', 'user', 'bot', 'anonymous'] },
 		{ _id: 'user-generate-access-token',    roles : ['admin'] },
 		{ _id: 'view-d-room',                   roles : ['admin', 'user', 'bot'] },
-		{ _id: 'view-full-other-user-info',     roles : ['admin'] },
+		{ _id: 'view-full-other-user-info',     roles : ['admin', 'user'] },
 		{ _id: 'view-history',                  roles : ['admin', 'user', 'anonymous'] },
 		{ _id: 'view-joined-room',              roles : ['guest', 'bot', 'anonymous'] },
 		{ _id: 'view-join-code',                roles : ['admin'] },
@@ -85,14 +85,19 @@ Meteor.startup(function() {
 	}
 
 	const defaultRoles = [
-		{ name: 'admin',     scope: 'Users',         description: 'Admin' },
-		{ name: 'moderator', scope: 'Subscriptions', description: 'Moderator' },
-		{ name: 'leader',    scope: 'Subscriptions', description: 'Leader' },
-		{ name: 'owner',     scope: 'Subscriptions', description: 'Owner' },
-		{ name: 'user',      scope: 'Users',         description: '' },
-		{ name: 'bot',       scope: 'Users',         description: '' },
-		{ name: 'guest',     scope: 'Users',         description: '' },
-		{ name: 'anonymous', scope: 'Users',         description: '' },
+		{ name: 'admin',         scope: 'Users',         description: 'Admin' },
+		{ name: 'moderator',     scope: 'Subscriptions', description: 'Moderator' },
+		{ name: 'leader',        scope: 'Subscriptions', description: 'Leader' },
+		{ name: 'owner',         scope: 'Subscriptions', description: 'Owner' },
+		{ name: 'user',          scope: 'Users',         description: 'User' },
+		{ name: 'bot',           scope: 'Users',         description: 'Bot' },
+		{ name: 'guest',         scope: 'Users',         description: 'Guest' },
+		{ name: 'anonymous',     scope: 'Users',         description: 'Anonymous user' },
+		{ name: 'yellow-card',   scope: 'Users',     	 description: 'User with yellow card' },
+		{ name: 'expert', 	     scope: 'Users', 		 description: 'Expert' },
+		{ name: 'moderator',     scope: 'Users',	     description: 'Moderator' },
+		{ name: 'ngo-expert', 	 scope: 'Users',		 description: 'NGO Expert' },
+		{ name: 'ngo-moderator', scope: 'Users',	     description: 'NGO Moderator' },
 	];
 
 	for (const role of defaultRoles) {

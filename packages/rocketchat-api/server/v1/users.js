@@ -5,6 +5,26 @@ import { RocketChat } from 'meteor/rocketchat:lib';
 import _ from 'underscore';
 import Busboy from 'busboy';
 
+
+RocketChat.API.v1.addRoute('users.isDisplayNameInUse', { authRequired: true }, {
+	get() {
+		const params = this.requestParams();
+		check(params, {
+			name: String
+		});
+
+		const { name } = params;
+		const user = RocketChat.models.Users.findOneByName(name);
+		return {
+			statusCode: 200,
+			body: {
+				name,
+				nameInUse: (user && user.name) ? true : false
+			}
+		};
+	}
+});
+
 RocketChat.API.v1.addRoute('users.create', { authRequired: true }, {
 	post() {
 		check(this.bodyParams, {

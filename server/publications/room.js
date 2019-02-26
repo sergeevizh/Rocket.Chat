@@ -41,6 +41,9 @@ const fields = {
 	broadcast: 1,
 	encrypted: 1,
 	e2eKeyId: 1,
+	maxUserAmount: 1,
+	queue: 1,
+	queuing: 1,
 };
 
 const roomMap = (record) => {
@@ -137,5 +140,23 @@ RocketChat.models.Rooms.on('change', ({ clientAction, id, data }) => {
 			});
 		}
 		RocketChat.Notifications.streamUser.__emit(id, clientAction, data);
+	}
+});
+
+RocketChat.models.Subscriptions.on('changed', (type, subscription) => {
+	if (type === 'inserted' || type === 'removed') {
+		const room = RocketChat.models.Rooms.findOneById(subscription.rid);
+		if (room) {
+			room.userRo = !!subscription.ro;
+			room.queuing = !!subscription.queuing;
+			RocketChat.Notifications.notifyUserInThisInstance(subscription.u._id, 'rooms-changed', type, roomMap({ _room: room }));
+		}
+	} else if (type === 'changed') {
+		const room = RocketChat.models.Rooms.findOneById(subscription.rid);
+		if (room) {
+			room.userRo = !!subscription.ro;
+			room.queuing = !!subscription.queuing;
+			RocketChat.Notifications.notifyUserInThisInstance(subscription.u._id, 'rooms-changed', type, roomMap({ _room: room }));
+		}
 	}
 });

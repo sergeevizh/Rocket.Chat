@@ -10,11 +10,11 @@ RocketChat.settings.add('uniqueID', process.env.DEPLOYMENT_ID || Random.id(), {
 // if you add a node to the i18n.json with the same setting name but with `_Description` it will automatically work.
 
 RocketChat.settings.addGroup('Accounts', function() {
-	this.add('Accounts_AllowAnonymousRead', false, {
+	this.add('Accounts_AllowAnonymousRead', true, {
 		type: 'boolean',
 		public: true,
 	});
-	this.add('Accounts_AllowAnonymousWrite', false, {
+	this.add('Accounts_AllowAnonymousWrite', true, {
 		type: 'boolean',
 		public: true,
 		enableQuery: {

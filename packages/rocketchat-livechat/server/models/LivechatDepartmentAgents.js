@@ -13,6 +13,10 @@ class LivechatDepartmentAgents extends RocketChat.models._Base {
 		return this.find({ departmentId });
 	}
 
+	isUserAgentInDepartment(userId, departmentId) {
+		return !!this.findOne({ departmentId, agentId: userId });
+	}
+
 	saveAgent(agent) {
 		return this.upsert({
 			agentId: agent.agentId,
@@ -94,7 +98,7 @@ class LivechatDepartmentAgents extends RocketChat.models._Base {
 		const depAgents = this.find(query);
 
 		if (depAgents) {
-			return depAgents;
+			return depAgents.fetch(); // Change to return value, if sudden problems arise with getting agents for department / online, this is a good place to start
 		} else {
 			return [];
 		}

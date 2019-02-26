@@ -192,5 +192,8 @@ Meteor.startup(function() {
 
 			return RocketChat.addUserToDefaultChannels(adminUser, true);
 		}
+
+		// Clear chat room queues
+		RocketChat.models.Rooms.clearQueuesOfActiveRooms();
 	});
 });

@@ -58,6 +58,7 @@ import './methods/takeInquiry';
 import './methods/returnAsInquiry';
 import './methods/saveOfficeHours';
 import './methods/sendTranscript';
+import './methods/getQueuePosition.js';
 import './models/Users';
 import './models/Rooms';
 import './models/Subscriptions';

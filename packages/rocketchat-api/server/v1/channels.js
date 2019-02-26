@@ -17,7 +17,7 @@ function findChannelByIdOrName({ params, checkedArchived = true, userId }) {
 		room = RocketChat.models.Rooms.findOneByName(params.roomName, { fields });
 	}
 
-	if (!room || room.t !== 'c') {
+	if (!room) {
 		throw new Meteor.Error('error-room-not-found', 'The required "roomId" or "roomName" param provided does not match any channel');
 	}
 
@@ -180,7 +180,7 @@ function createChannelValidator(params) {
 
 function createChannel(userId, params) {
 	const readOnly = typeof params.readOnly !== 'undefined' ? params.readOnly : false;
-	const id = Meteor.runAsUser(userId, () => Meteor.call('createChannel', params.name, params.members ? params.members : [], readOnly, params.customFields));
+	const id = Meteor.runAsUser(userId, () => Meteor.call('createChannel', params.name, params.members ? params.members : [], readOnly, params.customFields, params.maxUserAmount));
 
 	return {
 		channel: findChannelByIdOrName({ params: { roomId: id.rid }, userId: this.userId }),
@@ -891,6 +891,32 @@ RocketChat.API.v1.addRoute('channels.setType', { authRequired: true }, {
 
 		return RocketChat.API.v1.success({
 			channel: this.composeRoomWithLastMessage(RocketChat.models.Rooms.findOneById(findResult._id, { fields: RocketChat.API.v1.defaultFieldsToExclude }), this.userId),
+		});
+	},
+});
+
+RocketChat.API.v1.addRoute('channels.setMaxUserAmount', { authRequired: true }, {
+	post() {
+		if ((this.bodyParams.maxUserAmount && typeof this.bodyParams.maxUserAmount !== 'number') ||
+			this.bodyParams.maxUserAmount <= 0) {
+			return RocketChat.API.v1.failure('The bodyParam "maxUserAmount" should be a number and above 0');
+		}
+		if (!this.bodyParams.maxUserAmount) {
+			return RocketChat.API.v1.failure('The bodyParam "maxUserAmount" is missing');
+		}
+
+		const findResult = findChannelByIdOrName({ params: this.requestParams() });
+
+		if (findResult.maxUserAmount === this.bodyParams.maxUserAmount) {
+			return RocketChat.API.v1.failure('The maximum user amount is the same as what it would be changed to.');
+		}
+
+		Meteor.runAsUser(this.userId, () => {
+			Meteor.call('saveRoomSettings', findResult._id, 'maxUserAmount', this.bodyParams.maxUserAmount);
+		});
+
+		return RocketChat.API.v1.success({
+			channel: RocketChat.models.Rooms.findOneById(findResult._id, { fields: RocketChat.API.v1.defaultFieldsToExclude }),
 		});
 	},
 });

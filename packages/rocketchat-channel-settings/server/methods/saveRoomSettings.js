@@ -2,7 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { Match, check } from 'meteor/check';
 import { RocketChat } from 'meteor/rocketchat:lib';
 
-const fields = ['roomName', 'roomTopic', 'roomAnnouncement', 'roomCustomFields', 'roomDescription', 'roomType', 'readOnly', 'reactWhenReadOnly', 'systemMessages', 'default', 'joinCode', 'tokenpass', 'streamingOptions', 'retentionEnabled', 'retentionMaxAge', 'retentionExcludePinned', 'retentionFilesOnly', 'retentionOverrideGlobal', 'encrypted'];
+const fields = ['roomName', 'roomTopic', 'roomAnnouncement', 'roomCustomFields', 'roomDescription', 'roomType', 'readOnly', 'reactWhenReadOnly', 'systemMessages', 'default', 'joinCode', 'tokenpass', 'streamingOptions', 'maxUserAmount', 'retentionEnabled', 'retentionMaxAge', 'retentionExcludePinned', 'retentionFilesOnly', 'retentionOverrideGlobal', 'encrypted'];
 Meteor.methods({
 	saveRoomSettings(rid, settings, value) {
 		const userId = Meteor.userId();
@@ -175,6 +175,9 @@ Meteor.methods({
 					break;
 				case 'joinCode':
 					RocketChat.models.Rooms.setJoinCodeById(rid, String(value));
+					break;
+				case 'maxUserAmount':
+					RocketChat.saveRoomMaxUserAmount(rid, value);
 					break;
 				case 'default':
 					RocketChat.models.Rooms.saveDefaultById(rid, value);

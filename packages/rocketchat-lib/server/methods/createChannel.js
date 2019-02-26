@@ -2,7 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { Match, check } from 'meteor/check';
 
 Meteor.methods({
-	createChannel(name, members, readOnly = false, customFields = {}, extraData = {}) {
+	createChannel(name, members, readOnly = false, customFields = {}, extraData = {}, maxUserAmount = 999) {
 		check(name, String);
 		check(members, Match.Optional([String]));
 
@@ -13,6 +13,6 @@ Meteor.methods({
 		if (!RocketChat.authz.hasPermission(Meteor.userId(), 'create-c')) {
 			throw new Meteor.Error('error-not-allowed', 'Not allowed', { method: 'createChannel' });
 		}
-		return RocketChat.createRoom('c', name, Meteor.user() && Meteor.user().username, members, readOnly, { customFields, ...extraData });
+		return RocketChat.createRoom('c', name, Meteor.user() && Meteor.user().username, members, readOnly, { customFields, ...extraData }, maxUserAmount);
 	},
 });

@@ -90,6 +90,10 @@ export class Users extends Base {
 		return this.findOne(query, options);
 	}
 
+	findOneByName(name, options) {
+		return this.findOne({ name }, options);
+	}
+
 	findOneByEmailAddress(emailAddress, options) {
 		const query = { 'emails.address': new RegExp(`^${ s.escapeRegExp(emailAddress) }$`, 'i') };
 
@@ -338,6 +342,17 @@ export class Users extends Base {
 		};
 
 		return this.findOne(query, options);
+	}
+
+	findExpiredAnonymousUsers(options) {
+		const queryDate = new Date();
+		queryDate.setMinutes(queryDate.getMinutes() - 15);
+		const query = {
+			roles: 'anonymous',
+			statusConnection: 'offline',
+			_updatedAt: { $lte: queryDate },
+		};
+		return this.find(query, options);
 	}
 
 	// UPDATE

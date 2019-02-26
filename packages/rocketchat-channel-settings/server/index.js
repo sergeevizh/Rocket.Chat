@@ -10,4 +10,5 @@ import './functions/saveRoomReadOnly';
 import './functions/saveRoomSystemMessages';
 import './functions/saveRoomTopic';
 import './functions/saveRoomType';
+import './functions/saveRoomMaxUserAmount.js';
 import './methods/saveRoomSettings';
