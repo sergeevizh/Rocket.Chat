@@ -1,3 +1,7 @@
+import { Meteor } from 'meteor/meteor';
+import { check } from 'meteor/check';
+
+
 Meteor.methods({
 	removeUserFromQueue(rid) {
 		check(rid, String);
@@ -20,5 +24,5 @@ Meteor.methods({
 			RocketChat.models.Subscriptions.removeByRoomIdAndUserId(rid, Meteor.userId());
 			return RocketChat.models.Rooms.removeUserFromQueue(rid, Meteor.userId());
 		}
-	}
+	},
 });

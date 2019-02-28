@@ -1,3 +1,6 @@
+import { Meteor } from 'meteor/meteor';
+
+
 Meteor.publish('allUsers', function() {
 	if (!this.userId) {
 		return this.ready();
@@ -9,8 +12,8 @@ Meteor.publish('allUsers', function() {
 			name: 1,
 			status: 1,
 			utcOffset: 1,
-			roles: 1
-		}
+			roles: 1,
+		},
 	});
 });
 

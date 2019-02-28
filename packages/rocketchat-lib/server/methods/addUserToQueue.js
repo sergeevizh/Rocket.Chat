@@ -1,3 +1,7 @@
+import { Meteor } from 'meteor/meteor';
+import { check } from 'meteor/check';
+
+
 Meteor.methods({
 	addUserToQueue(rid, code) {
 		check(rid, String);
@@ -36,5 +40,5 @@ Meteor.methods({
 			RocketChat.models.Subscriptions.createWithRoomAndUser(room, user, { open: true, ro: true, queuing: true });
 			return RocketChat.models.Rooms.addUserToQueue(rid, Meteor.userId());
 		}
-	}
+	},
 });

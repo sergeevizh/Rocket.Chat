@@ -2,6 +2,8 @@ import { Meteor } from 'meteor/meteor';
 import { settings } from '../../lib/settings';
 import _ from 'underscore';
 
+/* eslint-disable complexity */
+
 let _Settings;
 
 const blockedSettings = {};

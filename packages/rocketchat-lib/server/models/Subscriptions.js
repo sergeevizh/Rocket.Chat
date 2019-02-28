@@ -1,5 +1,7 @@
 import _ from 'underscore';
 
+/* eslint-disable quote-props, prefer-rest-params, comma-dangle */
+
 class ModelSubscriptions extends RocketChat.models._Base {
 	constructor() {
 		super(...arguments);
@@ -323,7 +325,7 @@ class ModelSubscriptions extends RocketChat.models._Base {
 
 	setCustomFieldsDirectMessagesByUserId(userId, fields) {
 		const values = {};
-		Object.keys(fields).forEach(key => {
+		Object.keys(fields).forEach((key) => {
 			values[`customFields.${ key }`] = fields[key];
 		});
 

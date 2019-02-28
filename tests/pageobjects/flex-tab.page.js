@@ -1,6 +1,8 @@
 import Page from './Page';
 import Global from './global';
 
+/* eslint-disable complexity */
+
 class FlexTab extends Page {
 	get moreActions() { return browser.element('.rc-room-actions__button.js-more') ; }
 	// Channel Info Tab

@@ -1,10 +1,13 @@
+import { Meteor } from 'meteor/meteor';
+import { check } from 'meteor/check';
+
 Meteor.methods({
 	getRoomByNameOrId(rid) {
 		check(rid, String);
 
 		if (!Meteor.userId()) {
 			throw new Meteor.Error('error-invalid-user', 'Invalid user', {
-				method: 'getRoomByNameOrId'
+				method: 'getRoomByNameOrId',
 			});
 		}
 
@@ -12,7 +15,7 @@ Meteor.methods({
 
 		if (room == null) {
 			throw new Meteor.Error('error-not-allowed', 'Not allowed', {
-				method: 'getRoomByNameOrId'
+				method: 'getRoomByNameOrId',
 			});
 		}
 
@@ -23,10 +26,10 @@ Meteor.methods({
 
 		if (room.t !== 'c' || RocketChat.authz.hasPermission(Meteor.userId(), 'view-c-room') !== true) {
 			throw new Meteor.Error('error-not-allowed', 'Not allowed', {
-				method: 'getRoomByNameOrId'
+				method: 'getRoomByNameOrId',
 			});
 		}
 
 		return room;
-	}
+	},
 });

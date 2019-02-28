@@ -1,10 +1,13 @@
+import { Meteor } from 'meteor/meteor';
+import { check } from 'meteor/check';
+
 Meteor.methods({
 	addToRoomQueue(roomId, userId) {
 		check(roomId, String);
 
 		if (!Meteor.userId()) {
 			throw new Meteor.Error('error-invalid-user', 'Invalid user', {
-				method: 'addToRoomQueue'
+				method: 'addToRoomQueue',
 			});
 		}
 
@@ -12,11 +15,11 @@ Meteor.methods({
 
 		if (room == null) {
 			throw new Meteor.Error('error-not-allowed', 'Not allowed', {
-				method: 'addToRoomQueue'
+				method: 'addToRoomQueue',
 			});
 		}
 
 		Meteor.models.Rooms.addToQueue(roomId, userId);
 		return true;
-	}
+	},
 });

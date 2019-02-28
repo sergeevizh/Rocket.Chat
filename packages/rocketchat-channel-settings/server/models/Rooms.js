@@ -68,12 +68,12 @@ RocketChat.models.Rooms.setSystemMessagesById = function(_id, systemMessages) {
 
 RocketChat.models.Rooms.setMaxUserAmountById = function(_id, maxUserAmount) {
 	const query = {
-		_id
+		_id,
 	};
 	const update = {
 		$set: {
-			maxUserAmount
-		}
+			maxUserAmount,
+		},
 	};
 	return this.update(query, update);
 };

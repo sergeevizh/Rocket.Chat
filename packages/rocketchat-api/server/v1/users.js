@@ -10,7 +10,7 @@ RocketChat.API.v1.addRoute('users.isDisplayNameInUse', { authRequired: true }, {
 	get() {
 		const params = this.requestParams();
 		check(params, {
-			name: String
+			name: String,
 		});
 
 		const { name } = params;
@@ -19,10 +19,10 @@ RocketChat.API.v1.addRoute('users.isDisplayNameInUse', { authRequired: true }, {
 			statusCode: 200,
 			body: {
 				name,
-				nameInUse: (user && user.name) ? true : false
-			}
+				nameInUse: (user && user.name) ? true : false,
+			},
 		};
-	}
+	},
 });
 
 RocketChat.API.v1.addRoute('users.create', { authRequired: true }, {

@@ -13,6 +13,8 @@ import { getAvatarUrlFromUsername } from 'meteor/rocketchat:ui';
 
 import _ from 'underscore';
 
+/* eslint-disable complexity */
+
 export class SlackImporter extends Base {
 	constructor(info) {
 		super(info);

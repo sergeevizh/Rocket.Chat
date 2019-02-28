@@ -11,6 +11,8 @@ import vm from 'vm';
 import Fiber from 'fibers';
 import Future from 'fibers/future';
 
+/* eslint-disable complexity */
+
 RocketChat.integrations.triggerHandler = new class RocketChatIntegrationHandler {
 	constructor() {
 		this.vm = vm;

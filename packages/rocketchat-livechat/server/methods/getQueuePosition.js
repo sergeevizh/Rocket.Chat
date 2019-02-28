@@ -1,4 +1,7 @@
+import { Meteor } from 'meteor/meteor';
+import { check } from 'meteor/check';
 import LivechatVisitors from '../models/LivechatVisitors';
+
 
 Meteor.methods({
 	'livechat:getQueuePosition'(token) {
@@ -17,5 +20,5 @@ Meteor.methods({
 		}
 
 		return RocketChat.models.LivechatInquiry.find({ department: visitor.department, ts: { $lt: inquiry.ts }, status: 'open' }).count() + 1;
-	}
+	},
 });

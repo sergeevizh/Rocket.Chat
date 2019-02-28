@@ -3,6 +3,8 @@ import { check } from 'meteor/check';
 import { HTTP } from 'meteor/http';
 import { Gravatar } from 'meteor/jparker:gravatar';
 
+/* eslint-disable complexity */
+
 function getAvatarSuggestionForUser(user) {
 	check(user, Object);
 

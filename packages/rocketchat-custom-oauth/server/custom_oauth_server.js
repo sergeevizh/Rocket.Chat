@@ -13,6 +13,8 @@ const logger = new Logger('CustomOAuth');
 const Services = {};
 const BeforeUpdateOrCreateUserFromExternalService = [];
 
+/* eslint-disable complexity */
+
 export class CustomOAuth {
 	constructor(name, options) {
 		logger.debug('Init CustomOAuth', name, options);

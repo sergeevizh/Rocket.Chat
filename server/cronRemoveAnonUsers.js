@@ -1,9 +1,11 @@
 /* globals SyncedCron */
 
+import { Meteor } from 'meteor/meteor';
+
 function removeAnonymousUsers() {
 	const anonymousUsers = RocketChat.models.Users.findExpiredAnonymousUsers().fetch();
 
-	anonymousUsers.forEach(user => {
+	anonymousUsers.forEach((user) => {
 
 		try {
 			RocketChat.models.Subscriptions.removeByUserId(user._id);
@@ -24,7 +26,7 @@ Meteor.startup(function() {
 		SyncedCron.add({
 			name: 'Remove anonymous users',
 			schedule: (parser) => parser.cron('*/5 * * * *'),
-			job: removeAnonymousUsers
+			job: removeAnonymousUsers,
 		});
 
 		return SyncedCron.start();
