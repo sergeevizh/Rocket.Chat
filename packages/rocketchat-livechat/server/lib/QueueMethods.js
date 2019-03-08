@@ -128,7 +128,7 @@ RocketChat.QueueMethods = {
 				_id: guest._id,
 				username: guest.username,
 				token: message.token,
-				status: guest.status || 'offline'
+				status: guest.status || 'online'
 			},
 			cl: false,
 			open: true,
