@@ -285,7 +285,7 @@ class ModelUsers extends RocketChat.models._Base {
 	updateLastLoginById(_id) {
 		const update = {
 			$set: {
-				lastLogin: new Date
+				lastLogin: new Date()
 			}
 		};
 
@@ -590,7 +590,7 @@ class ModelUsers extends RocketChat.models._Base {
 	// INSERT
 	create(data) {
 		const user = {
-			createdAt: new Date,
+			createdAt: new Date(),
 			avatarOrigin: 'none'
 		};
 

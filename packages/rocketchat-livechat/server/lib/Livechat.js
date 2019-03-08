@@ -72,7 +72,8 @@ RocketChat.Livechat = {
 				return true;
 			}
 			const onlineAgents = RocketChat.models.LivechatDepartmentAgents.getOnlineForDepartment(dept._id);
-			return onlineAgents.count() > 0;
+			return onlineAgents.length > 0;
+
 		});
 	},
 	getRoom(guest, message, roomInfo, agent) {
