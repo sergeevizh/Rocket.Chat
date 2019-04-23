@@ -3,13 +3,15 @@ RocketChat.RoomQueues = {
 		const room = this.getRoom(roomId);
 		const user = this.getUser(userId);
 
+
 		if (this.hasUserAlreadyJoinedRoom(user, room)) {
 			return;
 		}
-		if (!this.isRoomFull(room)) {
+
+		if (this.isUserAdmin(user) || !this.isRoomFull(room)) {
 			return RocketChat.addUserToRoom(room._id, user);
 		}
-		console.log('Adding user to queue for room');
+		// console.log('Adding user to queue for room');
 		return RocketChat.addUserToQueue(room, user);
 	},
 
@@ -39,8 +41,14 @@ RocketChat.RoomQueues = {
 			return false;
 		}
 		const regularUsersInRoom = this.getRegularUsersInRoom(room);
-		console.log(`Regular users in room ${ room._id }:`, regularUsersInRoom);
+		// console.log(`Regular users in room ${ room._id }:`, regularUsersInRoom);
 		return regularUsersInRoom.length >= room.maxUserAmount;
+	},
+
+	isUserAdmin(user) {
+		const adminRoles = ['admin', 'ngo-expert', 'ngo-moderator'];
+		const roles = (user && user.roles) || [];
+		return adminRoles.some(adminRole => roles.includes(adminRole));
 	},
 
 	getRegularUsersInRoom(room) {
@@ -59,12 +67,12 @@ RocketChat.RoomQueues = {
 		const queue = room.queue || [];
 
 		if (queue.length < 1) {
-			console.log(`Did not queue as the queue for room ${ rid } was empty.`);
+			// console.log(`Did not queue as the queue for room ${ rid } was empty.`);
 			return;
 		}
 
 		if (!this.isRoomFull(room)) {
-			console.log(`Did not update queue as the room ${ rid } was still full.`);
+			// console.log(`Did not update queue as the room ${ rid } was still full.`);
 			return;
 		}
 

@@ -292,7 +292,6 @@ class ModelSubscriptions extends RocketChat.models._Base {
 
 		const update = {
 			$set: {
-				open: true,
 				alert: false,
 				unread: 0,
 				userMentions: 0,
@@ -312,7 +311,6 @@ class ModelSubscriptions extends RocketChat.models._Base {
 
 		const update = {
 			$set: {
-				open: true,
 				alert: true,
 				ls: firstMessageUnreadTimestamp
 			}
@@ -424,8 +422,7 @@ class ModelSubscriptions extends RocketChat.models._Base {
 
 		const update = {
 			$set: {
-				alert: true,
-				open: true
+				alert: true
 			},
 			$inc: {
 				unread: inc
@@ -445,8 +442,7 @@ class ModelSubscriptions extends RocketChat.models._Base {
 
 		const update = {
 			$set: {
-				alert: true,
-				open: true
+				alert: true
 			},
 			$inc: {
 				unread: incUnread,
@@ -467,8 +463,7 @@ class ModelSubscriptions extends RocketChat.models._Base {
 
 		const update = {
 			$set: {
-				alert: true,
-				open: true
+				alert: true
 			},
 			$inc: {
 				unread: incUnread,
@@ -493,8 +488,7 @@ class ModelSubscriptions extends RocketChat.models._Base {
 
 		const update = {
 			$set: {
-				alert: true,
-				open: true
+				alert: true
 			}
 		};
 		return this.update(query, update, { multi: true });
@@ -691,8 +685,7 @@ class ModelSubscriptions extends RocketChat.models._Base {
 		const update = {
 			$set: {
 				queuing: false,
-				ro: false,
-				open: true
+				ro: false
 			}
 		};
 

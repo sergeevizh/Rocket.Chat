@@ -10,12 +10,18 @@ Meteor.methods({
 			throw new Meteor.Error('error-not-authorized', 'Invalid visitor token', { method: 'livechat:getQueuePosition' });
 		}
 
-		const inquiry = RocketChat.models.LivechatInquiry.findOne({ 'v._id': visitor._id, status: 'open' });
+		const inquiry = RocketChat.models.LivechatInquiry.findOne({ 'v._id': visitor._id });
 
-		if (!inquiry) {
+		if (!inquiry || inquiry.status === 'closed') {
+			throw new Meteor.Error('error-not-active-livechat', 'You are not currently in an active livechat session!', { method: 'livechat:getQueuePosition' });
+		}
+
+		if (inquiry.status === 'taken') {
+			// already taken -> queue position = 0
 			return 0;
 		}
 
-		return RocketChat.models.LivechatInquiry.find({ department: visitor.department, ts: { $lt: inquiry.ts }, status: 'open' }).count() + 1;
+		const inquiriesBefore = RocketChat.models.LivechatInquiry.findOpenInquiriesForDepartmentBefore(inquiry.department, inquiry.ts).fetch();
+		return inquiriesBefore.length + 1;
 	}
 });

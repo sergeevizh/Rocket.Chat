@@ -32,6 +32,7 @@ RocketChat.deleteUser = function(userId) {
 		RocketChat.models.Subscriptions.removeByUserId(userId); // Remove user subscriptions
 		RocketChat.models.Rooms.removeByTypeContainingUsername('d', user.username); // Remove direct rooms with the user
 		RocketChat.models.Rooms.removeUsernameFromAll(user.username); // Remove user from all other rooms
+		RocketChat.models.Rooms.removeUsernameFromAllQueues(user.username); // Remove user from all room queues
 
 		// removes user's avatar
 		if (user.avatarOrigin === 'upload' || user.avatarOrigin === 'url') {
