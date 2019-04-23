@@ -11,7 +11,9 @@ RocketChat.getFullUserData = function({userId, filter, limit}) {
 		type: 1,
 		active: 1,
 		roles: 1,
-		reason: 1
+		reason: 1,
+		statusConnection: 1,
+		customFields: 1
 	};
 
 	if (RocketChat.authz.hasPermission(userId, 'view-full-other-user-info')) {
