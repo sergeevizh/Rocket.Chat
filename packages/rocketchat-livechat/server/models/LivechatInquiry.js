@@ -110,6 +110,27 @@ class LivechatInquiry extends RocketChat.models._Base {
 
 		return this.update(query, update, { multi: true });
 	}
+
+	findOpenInquiriesForDepartmentBefore(departmentId, ts) {
+		const query = {
+			department: departmentId,
+			status: 'open',
+			ts: {
+				$lt: ts
+			}
+		};
+
+		return this.find(query);
+	}
+
+	findOpenInquiriesByVisitorId(visitorId) {
+		const query = {
+			status: 'open',
+			'v._id': visitorId
+		};
+
+		return this.find(query);
+	}
 }
 
 RocketChat.models.LivechatInquiry = new LivechatInquiry();
