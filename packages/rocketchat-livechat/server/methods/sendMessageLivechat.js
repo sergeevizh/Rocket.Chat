@@ -33,6 +33,9 @@ Meteor.methods({
 				msg,
 				token
 			},
+			roomInfo: {
+				department: guest.department
+			},
 			agent
 		});
 	}
