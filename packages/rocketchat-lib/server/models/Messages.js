@@ -637,6 +637,14 @@ RocketChat.models.Messages = new class extends RocketChat.models._Base {
 		return this.createWithTypeRoomIdMessageAndUser('subscription-role-removed', roomId, message, user, extraData);
 	}
 
+	createArchivedWithRoomIdAndUser(roomId, user, extraData) {
+		return this.createWithTypeRoomIdMessageAndUser('archived', roomId, 'archived', user, extraData);
+	}
+
+	createUnarchivedWithRoomIdAndUser(roomId, user, extraData) {
+		return this.createWithTypeRoomIdMessageAndUser('unarchived', roomId, 'unarchived', user, extraData);
+	}
+
 	// REMOVE
 	removeById(_id) {
 		const query =	{_id};
