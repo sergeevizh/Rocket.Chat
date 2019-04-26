@@ -231,7 +231,8 @@ class ModelSubscriptions extends RocketChat.models._Base {
 			$set: {
 				alert: false,
 				open: false,
-				archived: true
+				archived: true,
+				ro: true
 			}
 		};
 
@@ -246,7 +247,8 @@ class ModelSubscriptions extends RocketChat.models._Base {
 			$set: {
 				alert: false,
 				open: true,
-				archived: false
+				archived: false,
+				ro: false
 			}
 		};
 
