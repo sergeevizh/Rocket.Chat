@@ -2,17 +2,16 @@
 
 function removeAnonymousUsers() {
 	const anonymousUsers = RocketChat.models.Users.findExpiredAnonymousUsers().fetch();
-
 	for (const user of anonymousUsers) {
-		let rooms = [];
 		Meteor.runAsUser(user._id, () => {
-			rooms = Meteor.call('rooms/get');
-		});
+			Meteor.call('rooms/get', (error, result) => {
+				for (const room of result) {
+					RocketChat.removeUserFromRoom(room._id, user);
+				}
+				RocketChat.deleteUser(user._id);
+			});
 
-		for (const room of rooms) {
-			RocketChat.removeUserFromRoom(room._id, user);
-			RocketChat.deleteUser(user._id);
-		}
+		});
 	}
 }
 
