@@ -1,6 +1,10 @@
 import _ from 'underscore';
 import s from 'underscore.string';
 
+
+const IDLE_MINUTE_LIMIT = 15;
+
+
 class ModelUsers extends RocketChat.models._Base {
 	constructor() {
 		super(...arguments);
@@ -255,7 +259,6 @@ class ModelUsers extends RocketChat.models._Base {
 	}
 
 	findExpiredAnonymousUsers(options) {
-		const IDLE_MINUTE_LIMIT = 15;
 		const queryDate = new Date(Date.now() - IDLE_MINUTE_LIMIT * 60 * 1000);
 		const query = {
 			roles: 'anonymous',
