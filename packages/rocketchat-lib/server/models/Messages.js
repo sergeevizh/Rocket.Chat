@@ -574,7 +574,7 @@ RocketChat.models.Messages = new class extends RocketChat.models._Base {
 	}
 
 	createUserRemovedWithRoomIdAndUser(roomId, user, extraData) {
-		const message = user.username;
+		const message = user.name;
 		return this.createWithTypeRoomIdMessageAndUser('ru', roomId, message, user, extraData);
 	}
 
