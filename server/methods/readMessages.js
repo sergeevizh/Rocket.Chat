@@ -2,6 +2,9 @@ import { ReadReceipt } from '../../imports/message-read-receipt/server/lib/ReadR
 
 Meteor.methods({
 	readMessages(rid) {
+		if (rid === null) {
+			return [];
+		}
 		check(rid, String);
 
 		const userId = Meteor.userId();

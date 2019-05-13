@@ -2,7 +2,7 @@ import _ from 'underscore';
 import s from 'underscore.string';
 
 
-const IDLE_MINUTE_LIMIT = 15;
+const IDLE_MINUTE_LIMIT = 60;
 
 
 class ModelUsers extends RocketChat.models._Base {
