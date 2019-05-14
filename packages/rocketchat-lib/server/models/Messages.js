@@ -558,18 +558,18 @@ RocketChat.models.Messages = new class extends RocketChat.models._Base {
 	}
 
 	createUserJoinWithRoomIdAndUser(roomId, user, extraData) {
-		const message = user.username;
+		const message = user.name;
 		return this.createWithTypeRoomIdMessageAndUser('uj', roomId, message, user, extraData);
 	}
 
 	createUserJoinWithRoomIdAndUsername(roomId, username, extraData) {
-		const message = username;
 		const user = RocketChat.models.Users.findOneByUsername(username);
+		const message = user.name;
 		return this.createWithTypeRoomIdMessageAndUser('uj', roomId, message, user, extraData);
 	}
 
 	createUserLeaveWithRoomIdAndUser(roomId, user, extraData) {
-		const message = user.username;
+		const message = user.name;
 		return this.createWithTypeRoomIdMessageAndUser('ul', roomId, message, user, extraData);
 	}
 
@@ -579,7 +579,7 @@ RocketChat.models.Messages = new class extends RocketChat.models._Base {
 	}
 
 	createUserAddedWithRoomIdAndUser(roomId, user, extraData) {
-		const message = user.username;
+		const message = user.name;
 		return this.createWithTypeRoomIdMessageAndUser('au', roomId, message, user, extraData);
 	}
 
@@ -588,52 +588,52 @@ RocketChat.models.Messages = new class extends RocketChat.models._Base {
 	}
 
 	createUserMutedWithRoomIdAndUser(roomId, user, extraData) {
-		const message = user.username;
+		const message = user.name;
 		return this.createWithTypeRoomIdMessageAndUser('user-muted', roomId, message, user, extraData);
 	}
 
 	createUserUnmutedWithRoomIdAndUser(roomId, user, extraData) {
-		const message = user.username;
+		const message = user.name;
 		return this.createWithTypeRoomIdMessageAndUser('user-unmuted', roomId, message, user, extraData);
 	}
 
 	createNewModeratorWithRoomIdAndUser(roomId, user, extraData) {
-		const message = user.username;
+		const message = user.name;
 		return this.createWithTypeRoomIdMessageAndUser('new-moderator', roomId, message, user, extraData);
 	}
 
 	createModeratorRemovedWithRoomIdAndUser(roomId, user, extraData) {
-		const message = user.username;
+		const message = user.name;
 		return this.createWithTypeRoomIdMessageAndUser('moderator-removed', roomId, message, user, extraData);
 	}
 
 	createNewOwnerWithRoomIdAndUser(roomId, user, extraData) {
-		const message = user.username;
+		const message = user.name;
 		return this.createWithTypeRoomIdMessageAndUser('new-owner', roomId, message, user, extraData);
 	}
 
 	createOwnerRemovedWithRoomIdAndUser(roomId, user, extraData) {
-		const message = user.username;
+		const message = user.name;
 		return this.createWithTypeRoomIdMessageAndUser('owner-removed', roomId, message, user, extraData);
 	}
 
 	createNewLeaderWithRoomIdAndUser(roomId, user, extraData) {
-		const message = user.username;
+		const message = user.name;
 		return this.createWithTypeRoomIdMessageAndUser('new-leader', roomId, message, user, extraData);
 	}
 
 	createLeaderRemovedWithRoomIdAndUser(roomId, user, extraData) {
-		const message = user.username;
+		const message = user.name;
 		return this.createWithTypeRoomIdMessageAndUser('leader-removed', roomId, message, user, extraData);
 	}
 
 	createSubscriptionRoleAddedWithRoomIdAndUser(roomId, user, extraData) {
-		const message = user.username;
+		const message = user.name;
 		return this.createWithTypeRoomIdMessageAndUser('subscription-role-added', roomId, message, user, extraData);
 	}
 
 	createSubscriptionRoleRemovedWithRoomIdAndUser(roomId, user, extraData) {
-		const message = user.username;
+		const message = user.name;
 		return this.createWithTypeRoomIdMessageAndUser('subscription-role-removed', roomId, message, user, extraData);
 	}
 
