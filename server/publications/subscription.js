@@ -29,7 +29,7 @@ const fields = {
 	autoTranslateLanguage: 1,
 	disableNotifications: 1,
 	hideUnreadStatus: 1,
-	queuing: 1,
+	queueing: 1,
 	ro: 1
 };
 

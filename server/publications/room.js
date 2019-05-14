@@ -35,7 +35,7 @@ const fields = {
 	tokenpass: 1,
 	maxUserAmount: 1,
 	queue: 1,
-	queuing: 1,
+	queueing: 1,
 	streamingOptions: 1
 };
 

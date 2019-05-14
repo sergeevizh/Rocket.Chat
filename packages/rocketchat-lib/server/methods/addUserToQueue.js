@@ -33,7 +33,7 @@ Meteor.methods({
 			// User already in queue
 			return;
 		} else {
-			RocketChat.models.Subscriptions.createWithRoomAndUser(room, user, { open: true, ro: true, queuing: true });
+			RocketChat.models.Subscriptions.createWithRoomAndUser(room, user, { open: true, ro: true, queueing: true });
 			return RocketChat.models.Rooms.addUserToQueue(rid, Meteor.userId());
 		}
 	}

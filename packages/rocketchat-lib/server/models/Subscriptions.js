@@ -610,7 +610,7 @@ class ModelSubscriptions extends RocketChat.models._Base {
 		const update = {
 			$set: {
 				ro: false,
-				queuing: false
+				queueing: false
 			}
 		};
 
@@ -636,7 +636,7 @@ class ModelSubscriptions extends RocketChat.models._Base {
 				username: user.username,
 				name: user.name
 			},
-			queuing: false,
+			queueing: false,
 			ro: false
 		};
 
@@ -686,7 +686,7 @@ class ModelSubscriptions extends RocketChat.models._Base {
 
 		const update = {
 			$set: {
-				queuing: false,
+				queueing: false,
 				ro: false
 			}
 		};

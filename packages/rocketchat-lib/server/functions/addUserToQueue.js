@@ -16,7 +16,7 @@ RocketChat.addUserToQueue = function(room, user) {
 		unread: 1,
 		userMentions: 1,
 		groupMentions: 0,
-		queuing: true,
+		queueing: true,
 		ro: true
 	});
 
