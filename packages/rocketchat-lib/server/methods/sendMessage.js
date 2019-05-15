@@ -38,7 +38,7 @@ Meteor.methods({
 			}
 		});
 
-		message.ip = this.connection.clientAddress;
+		message.ip = this.connection.httpHeaders['x-real-ip'] || this.connection.httpHeaders['x-forwarded-for'];
 
 		message.warningToUser = message.warningToUser;
 
