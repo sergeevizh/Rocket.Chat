@@ -18,7 +18,7 @@ if [ "$cmd" == "build" ]; then
 elif [ "$cmd" == "docker" ]; then
   if [ "$scmd" == "build" ]; then
     verify_target $target
-    docker build . -f .docker/Dockerfile -t devgeniem/rocket.chat:$target
+    docker build . -f nginx/Dockerfile -t devgeniem/rocket.chat:$target
   elif [ "$scmd" == "push" ]; then
     verify_target $target
     docker push devgeniem/rocket.chat:$target
