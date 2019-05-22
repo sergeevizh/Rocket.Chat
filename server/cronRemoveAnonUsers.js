@@ -21,7 +21,7 @@ Meteor.startup(function() {
 
 		SyncedCron.add({
 			name: 'Remove anonymous users',
-			schedule: (parser) => parser.cron('*/5 * * * *'),
+			schedule: (parser) => parser.cron('*/10 * * * *'),
 			job: removeAnonymousUsers
 		});
 

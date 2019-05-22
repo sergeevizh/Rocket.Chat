@@ -1,11 +1,6 @@
 const model = RocketChat.models.Subscriptions;
 
-
 const COLLECTION_NAME = 'room-queue';
-
-// There is a typo in backend on 'queueing' but Im too lazy to fix it
-// just map it correctly to user
-// this is probably gonna bite me in the ass at some point
 
 const mapper = (fields) => {
 	return {
