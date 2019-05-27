@@ -293,8 +293,8 @@ RocketChat.Livechat = {
 			RocketChat.callbacks.run('livechat.saveRoom', roomData);
 		});
 
-		if (!_.isEmpty(guestData.name)) {
-			return RocketChat.models.Rooms.setLabelByRoomId(roomData._id, guestData.name) && RocketChat.models.Subscriptions.updateNameByRoomId(roomData._id, guestData.name);
+		if (!_.isEmpty(guestData)) {
+			return RocketChat.models.Rooms.setLabelByRoomId(roomData._id, guestData) && RocketChat.models.Subscriptions.updateNameByRoomId(roomData._id, guestData.name);
 		}
 	},
 
